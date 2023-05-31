@@ -12,14 +12,15 @@ def get_bluetooth_devices():
 
     for device_address, device_name, device_class in nearby_devices:
         device_data = {
-            'address': device_address,
-            'name': device_name,
-            'type': get_device_type(device_class),
-            'connected': is_device_connected(device_address)
+            'bluetooth_address': device_address,
+            'bluetooth_name': device_name,
+            'bluetooth_class': device_class,
+            'bluetooth_type': get_device_type(device_class),
+            'is_connected': is_device_connected(device_address)
         }
         devices.append(device_data)
 
-    return jsonify({'devices': devices, 'count': len(devices)})
+    return jsonify({'devices': devices, 'device_count': len(devices)})
 
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
@@ -37,6 +38,25 @@ def connect_bluetooth_device():
         socket.close()  # Close the Bluetooth connection
 
         return jsonify({'message': 'Bluetooth device connected successfully'})
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
+
+@bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
+def connect_ble_device():
+    address = request.json.get('address')  # Get the Bluetooth device address from the request
+
+    if not is_valid_bluetooth_address(address):
+        return jsonify({'message': 'Invalid Bluetooth address'}), 400
+
+    try:
+        socket = bluetooth.BluetoothSocket(bluetooth.LE)
+        socket.connect((address, bluetooth.ADDR_TYPE_PUBLIC))  # Connect to the BLE device
+
+        # Perform any necessary operations with the connected BLE device
+
+        socket.close()  # Close the Bluetooth connection
+
+        return jsonify({'message': 'BLE device connected successfully'})
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     
