@@ -14,10 +14,10 @@ def get_bluetooth_devices():
 
     for device_address, device_name, device_class in nearby_devices:
         device_data = {
-            'bluetooth_address': device_address,
-            'bluetooth_name': device_name,
-            'bluetooth_class': device_class,
-            'bluetooth_type': get_device_type(device_class),
+            'address': device_address,
+            'name': device_name,
+            'class': device_class,
+            'type': get_device_type(device_class),
             'is_connected': is_device_connected(device_address)
         }
         devices.append(device_data)
@@ -80,7 +80,7 @@ def get_usb_devices():
                 'name': product,
                 'vendor': manufacturer,
                 'serial_number': serial_number,
-                'connected': True
+                'is_connected': True
             }
             usb_devices.append(device_data)
 
