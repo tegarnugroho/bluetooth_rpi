@@ -1,7 +1,6 @@
 from flask import Blueprint, jsonify, request
 import bluetooth
 import usb.core
-import pywinusb.hid as hid
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -67,7 +66,7 @@ def connect_ble_device():
     except Exception as e:
         return jsonify({'message': str(e)}), 500
     
-@bluetooth_routes.route('/usb/rapsberry', methods=['GET'])
+@bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
     usb_devices = []
     
@@ -85,22 +84,3 @@ def get_usb_devices():
         usb_devices.append(device_data)
     
     return jsonify({'devices': usb_devices, 'count': len(usb_devices)}) 
-
-@bluetooth_routes.route('/usb/windows', methods=['GET'])
-def get_windows_usb():
-    devices = []
-    
-    # Find all USB devices
-    all_devices = hid.HidDeviceFilter().get_devices()
-    
-    # Extract relevant information from each device
-    for device in all_devices:
-        device_info = {
-            'vendor_id': device.vendor_id,
-            'product_id': device.product_id,
-            'vendor_name': device.vendor_name,
-            'product_name': device.product_name
-        }
-        devices.append(device_info)
-    
-    return jsonify(devices)
