@@ -87,6 +87,10 @@ def get_usb_devices():
 
         return jsonify({'devices': usb_devices, 'count': len(usb_devices)})
     except usb.core.USBError as e:
-        return jsonify({'error': str(e)})
+        error_message = f"USBError: {str(e)}"
+        print(error_message)
+        return jsonify({'error': error_message})
     except Exception as e:
-        return jsonify({'error': 'An error occurred while retrieving USB devices.'})
+        error_message = f"An error occurred while retrieving USB devices: {str(e)}"
+        print(error_message)
+        return jsonify({'error': error_message})
