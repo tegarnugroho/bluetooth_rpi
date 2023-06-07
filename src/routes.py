@@ -1,6 +1,7 @@
 from flask import Blueprint, jsonify, request
 import bluetooth
 import usb.core
+import usb.util
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -65,22 +66,27 @@ def connect_ble_device():
         return jsonify({'message': 'BLE device connected successfully'})
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-    
+
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
     usb_devices = []
-    
-    for device in usb.core.find(find_all=True):
-        manufacturer = usb.util.get_string(device, device.iManufacturer)
-        product = usb.util.get_string(device, device.iProduct)
-        serial_number = usb.util.get_string(device, device.iSerialNumber)
-        
-        device_data = {
-            'name': product,
-            'vendor': manufacturer,
-            'serial_number': serial_number,
-            'connected': True
-        }
-        usb_devices.append(device_data)
-    
-    return jsonify({'devices': usb_devices, 'count': len(usb_devices)}) 
+
+    try:
+        for device in usb.core.find(find_all=True):
+            manufacturer = usb.util.get_string(device, device.iManufacturer) if device.iManufacturer else None
+            product = usb.util.get_string(device, device.iProduct) if device.iProduct else None
+            serial_number = usb.util.get_string(device, device.iSerialNumber) if device.iSerialNumber else None
+
+            device_data = {
+                'name': product,
+                'vendor': manufacturer,
+                'serial_number': serial_number,
+                'connected': True
+            }
+            usb_devices.append(device_data)
+
+        return jsonify({'devices': usb_devices, 'count': len(usb_devices)})
+    except usb.core.USBError as e:
+        return jsonify({'error': str(e)})
+    except Exception as e:
+        return jsonify({'error': 'An error occurred while retrieving USB devices.'})
