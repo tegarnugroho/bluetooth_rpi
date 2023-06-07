@@ -24,7 +24,6 @@ def get_bluetooth_devices():
 
     return jsonify({
         'data': devices, 
-        'length': len(devices),
         'status_code': 200,
         'message': 'ok!'
         }), 200
@@ -85,7 +84,11 @@ def get_usb_devices():
             }
             usb_devices.append(device_data)
 
-        return jsonify({'devices': usb_devices, 'count': len(usb_devices)})
+        return jsonify({
+            'data': usb_devices, 
+            'status_code': 200,
+            'message': 'ok!'
+            },), 200
     except usb.core.USBError as e:
         error_message = f"USBError: {str(e)}"
         print(error_message)
