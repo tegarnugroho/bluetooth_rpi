@@ -36,15 +36,23 @@ def connect_bluetooth_device():
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
     try:
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((address, 1))  # Connect to the Bluetooth device
+        # Request pairing with the Bluetooth device
+        pairing_result = bluetooth.request_pairing(address)
 
-        # Perform any necessary operations with the connected Bluetooth device
+        if pairing_result:
+            # Pairing successful, proceed with the connection
+            socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+            socket.connect((address, 1))  # Connect to the Bluetooth device
 
-        socket.close()  # Close the Bluetooth connection
+            # Perform any necessary operations with the connected Bluetooth device
 
-        return jsonify({'message': 'Bluetooth device connected successfully'})
-    except Exception as e:
+            socket.close()  # Close the Bluetooth connection
+
+            return jsonify({'message': 'Bluetooth device connected successfully'})
+        else:
+            return jsonify({'message': 'Pairing request rejected by the Bluetooth device'}), 403
+
+    except bluetooth.BluetoothError as e:
         return jsonify({'message': str(e)}), 500
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
