@@ -35,7 +35,7 @@ def connect_bluetooth_device():
     if not is_valid_bluetooth_address(address):
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
-    protocols = [bluetooth.RFCOMM, bluetooth.L2CAP, bluetooth.BTPROTO_RFCOMM]
+    protocols = [bluetooth.RFCOMM, bluetooth.L2CAP, bluetooth.HID_PROFILE, bluetooth.FTP_UUID]
 
     for protocol in protocols:
         try:
