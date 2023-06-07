@@ -35,17 +35,27 @@ def connect_bluetooth_device():
     if not is_valid_bluetooth_address(address):
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
-    try:
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((address, 1))  # Connect to the Bluetooth device
+    protocols = [bluetooth.RFCOMM, bluetooth.L2CAP, bluetooth.BTPROTO_RFCOMM]
 
-        # Perform any necessary operations with the connected Bluetooth device
+    for protocol in protocols:
+        try:
+            socket = bluetooth.BluetoothSocket(protocol)
+            socket.connect((address, 1))  # Connect to the Bluetooth device
 
-        socket.close()  # Close the Bluetooth connection
+            # Perform any necessary operations with the connected Bluetooth device
 
-        return jsonify({'message': 'Bluetooth device connected successfully'})
-    except Exception as e:
-        return jsonify({'message': str(e)}), 500
+            socket.close()  # Close the Bluetooth connection
+
+            return jsonify({'message': 'Bluetooth device connected successfully'})
+        except bluetooth.btcommon.BluetoothError as e:
+            if e.args[0] == 111:
+                continue  # Try the next protocol
+            else:
+                return jsonify({'message': str(e)}), 500
+        except Exception as e:
+            return jsonify({'message': str(e)}), 500
+
+    return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
 def connect_ble_device():
