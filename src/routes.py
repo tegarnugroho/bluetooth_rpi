@@ -44,7 +44,7 @@ def connect_bluetooth_device():
         socket.close()  # Close the Bluetooth connection
 
         return jsonify({'message': 'Bluetooth device connected successfully'})
-    except bluetooth.BluetoothError as e:
+    except Exception as e:
         return jsonify({'message': str(e)}), 500
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
