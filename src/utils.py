@@ -45,11 +45,3 @@ def get_device_type(device_class):
 def is_device_connected(address):
     services = bluetooth.find_service(address=address)
     return len(services) > 0
-
-def check_bluetooth_version():
-    try:
-        result = subprocess.check_output(["bluetoothctl", "--version"])
-        version = result.decode('utf-8').strip()
-        return version
-    except subprocess.CalledProcessError:
-        return None

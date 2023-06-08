@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 import bluetooth
 import usb.core
 import usb.util
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, check_bluetooth_version
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
@@ -32,6 +32,15 @@ def get_bluetooth_devices():
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
     address = request.json.get('address')  # Get the Bluetooth device address from the request
+    status = {
+        0: 'ok',
+        1: 'communication timeout',
+        3: 'checksum error',
+        4: 'unknown command',
+        5: 'invalid access level',
+        8: 'hardware error',
+        10: 'device not ready',
+    }
 
     if not is_valid_bluetooth_address(address):
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
@@ -41,15 +50,7 @@ def connect_bluetooth_device():
     for protocol in protocols:
         try:
             socket = bluetooth.BluetoothSocket(protocol)
-            
-            # Check Bluetooth module version
-            bluetooth_version = check_bluetooth_version(socket);
-            if bluetooth_version is not None:
-                print(f"Bluetooth module version: {bluetooth_version}")
-                
-                
             socket.connect((address, 1))  # Connect to the Bluetooth device
-
 
             # Perform any necessary operations with the connected Bluetooth device
 
@@ -57,14 +58,14 @@ def connect_bluetooth_device():
 
             return jsonify({'message': 'Bluetooth device connected successfully'})
         except bluetooth.btcommon.BluetoothError as e:
-            if e.args[0] == 111:
-                continue  # Try the next protocol
-            else:
-                return jsonify({'message': str(e)}), 500
+            error_code = e.args[0]
+            error_message = status.get(error_code, str(e))
+            return jsonify({'message': error_message}), 500
         except Exception as e:
             return jsonify({'message': str(e)}), 500
 
     return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
 def connect_ble_device():
