@@ -77,12 +77,7 @@ def get_connected_devices():
 def connect_bluetooth_device():
     address = str(request.json.get('address'))  # Convert the Bluetooth device address to a string
     passkey = "1111" # passkey of the device you want to connect
-
-    # kill any "bluetooth-agent" process that is already running
-    subprocess.call("kill -9 `pidof bluetooth-agent`",shell=True)
-
-    # Start a new "bluetooth-agent" process where XXXX is the passkey
-    subprocess.call("bluetooth-agent " + passkey + " &",shell=True)
+    
     status = {
         0: 'ok',
         1: 'communication timeout',
@@ -97,8 +92,8 @@ def connect_bluetooth_device():
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
     try:
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
+        subprocess.run(['hcitool', 'cc', address], check=True, capture_output=True)
+        subprocess.run(['hcitool', 'auth', address, passkey], check=True, capture_output=True)
 
         # Perform any necessary operations with the connected Bluetooth device
 
