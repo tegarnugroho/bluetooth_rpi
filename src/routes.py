@@ -31,11 +31,13 @@ def get_bluetooth_devices():
             port = service['port']
             name = service['name']
             host = service['host']
+            protocol = service["protocol"]
 
             service_data = {
                 'port': port,
                 'name': name,
                 'host': host,
+                'protocol': protocol,
                 # Include any other service-related information if needed
             }
 
@@ -49,7 +51,6 @@ def get_bluetooth_devices():
         'message': 'ok!'
     }), 200
 
-@bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
     address = request.json.get('address')  # Get the Bluetooth device address from the request
     status = {
@@ -65,26 +66,32 @@ def connect_bluetooth_device():
     if not is_valid_bluetooth_address(address):
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
-    protocols = [bluetooth.RFCOMM, bluetooth.L2CAP, bluetooth.HID_PROFILE, bluetooth.FTP_UUID]
+    try:
+        services = bluetooth.find_service(address=address)
 
-    for protocol in protocols:
-        try:
-            socket = bluetooth.BluetoothSocket(protocol)
-            socket.connect((address, 1))  # Connect to the Bluetooth device
+        for service in services:
+            port = service["port"]
+            protocol = service["protocol"]
 
-            # Perform any necessary operations with the connected Bluetooth device
+            try:
+                socket = bluetooth.BluetoothSocket(protocol)
+                socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port
 
-            socket.close()  # Close the Bluetooth connection
+                # Perform any necessary operations with the connected Bluetooth device
 
-            return jsonify({'message': 'Bluetooth device connected successfully'})
-        except bluetooth.btcommon.BluetoothError as e:
-            error_code = e.args[0]
-            error_message = status.get(error_code, str(e))
-            return jsonify({'message': error_message}), 500
-        except Exception as e:
-            return jsonify({'message': str(e)}), 500
+                socket.close()  # Close the Bluetooth connection
 
-    return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+                return jsonify({'message': 'Bluetooth device connected successfully'})
+            except bluetooth.btcommon.BluetoothError as e:
+                error_code = e.args[0]
+                error_message = status.get(error_code, str(e))
+                return jsonify({'message': error_message}), 500
+            except Exception as e:
+                return jsonify({'message': str(e)}), 500
+
+        return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+    except Exception as e:
+        return jsonify({'message': str(e)}), 500
 
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
