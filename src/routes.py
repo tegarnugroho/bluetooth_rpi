@@ -32,12 +32,16 @@ def get_bluetooth_devices():
             name = service['name']
             host = service['host']
             protocol = service["protocol"]
+            service_classes = service["service_classes"]
+            service_id = service["service_id"]
 
             service_data = {
                 'port': port,
                 'name': name,
                 'host': host,
                 'protocol': protocol,
+                'service_classes': service_classes,
+                'service_id': service_id,
                 # Include any other service-related information if needed
             }
 
@@ -76,39 +80,34 @@ def connect_bluetooth_device():
 
         for service in services:
             port = service["port"]
-            protocols = service.get("protocols")
+            protocol = service.get("protocol")
 
             print("Address value:", address)  # Print the address value for debugging
             print("Port value:", port)  # Print the port value for debugging
             print("Available Keys in Service:", service.keys())  # Print the available keys in the service dictionary
 
-            if protocols is not None:
+            if protocol is not None:
                 try:
-                    socket = None
-                    for protocol in protocols:
-                        protocol_value = protocol_mappings.get(protocol)
-                        if protocol_value is not None:
-                            try:
-                                socket = bluetooth.BluetoothSocket(protocol_value)
-                                socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and protocol
+                    protocol_value = protocol_mappings.get(protocol)
+                    if protocol_value is not None:
+                        try:
+                            socket = bluetooth.BluetoothSocket(protocol_value)
+                            socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and protocol
 
-                                # Perform any necessary operations with the connected Bluetooth device
+                            # Perform any necessary operations with the connected Bluetooth device
 
-                                socket.close()  # Close the Bluetooth connection
+                            socket.close()  # Close the Bluetooth connection
 
-                                return jsonify({'message': 'Bluetooth device connected successfully'})
-                            except bluetooth.btcommon.BluetoothError as e:
-                                error_code = e.args[0]
-                                error_message = status.get(error_code, str(e))
-                                return jsonify({'message': error_message, 'from': 'BluetoothError', 'port': port, 'protocol': protocol, 'address': address}), 500
-                            except Exception as e:
-                                return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
-
-                    if socket is None:
-                        return jsonify({'message': 'Failed to connect. No compatible protocol found for the Bluetooth device.'}), 500
+                            return jsonify({'message': 'Bluetooth device connected successfully'})
+                        except bluetooth.btcommon.BluetoothError as e:
+                            error_code = e.args[0]
+                            error_message = status.get(error_code, str(e))
+                            return jsonify({'message': error_message, 'from': 'BluetoothError', 'port': port, 'protocol': protocol, 'address': address}), 500
+                        except Exception as e:
+                            return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
 
                 except ValueError:
-                    return jsonify({'message': 'Invalid port value: {}'.format(port), 'from': 'ValueError', 'port': port, 'protocols': protocols, 'address': address}), 500
+                    return jsonify({'message': 'Invalid port value: {}'.format(port), 'from': 'ValueError', 'port': port, 'protocol': protocol, 'address': address}), 500
 
         return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
     except Exception as e:
