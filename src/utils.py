@@ -43,5 +43,5 @@ def get_device_type(device_class):
         return device_types.get(major_class, 'Unknown')
 
 def is_device_connected(address):
-    services = bluetooth.find_service(address=address)
-    return len(services) > 0
+    connected_devices = bluetooth.btcommon.BluetoothSocket().getpeername()
+    return address in connected_devices
