@@ -99,26 +99,6 @@ def connect_bluetooth_device():
     except Exception as e:
         return jsonify({'message': str(e)}), 500
 
-
-@bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
-def connect_ble_device():
-    address = request.json.get('address')  # Get the Bluetooth device address from the request
-
-    if not is_valid_bluetooth_address(address):
-        return jsonify({'message': 'Invalid Bluetooth address'}), 400
-
-    try:
-        socket = bluetooth.BluetoothSocket(bluetooth.LE)
-        socket.connect((address, bluetooth.ADDR_TYPE_PUBLIC))  # Connect to the BLE device
-
-        # Perform any necessary operations with the connected BLE device
-
-        socket.close()  # Close the Bluetooth connection
-
-        return jsonify({'message': 'BLE device connected successfully'})
-    except Exception as e:
-        return jsonify({'message': str(e)}), 500
-
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
     usb_devices = []
