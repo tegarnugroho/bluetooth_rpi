@@ -53,7 +53,7 @@ def get_bluetooth_devices():
 
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
-    address = request.json.get('address')  # Get the Bluetooth device address from the request
+    address = str(request.json.get('address'))  # Convert the Bluetooth device address to a string
     status = {
         0: 'ok',
         1: 'communication timeout',
@@ -62,6 +62,10 @@ def connect_bluetooth_device():
         5: 'invalid access level',
         8: 'hardware error',
         10: 'device not ready',
+    }
+    protocol_mappings = {
+        "L2CAP": 0,
+        "RFCOMM": 3,
     }
 
     if not is_valid_bluetooth_address(address):
@@ -72,31 +76,43 @@ def connect_bluetooth_device():
 
         for service in services:
             port = service["port"]
-            protocol = service["protocol"]
+            protocols = service["protocols"]
 
+            print("Address value:", address)  # Print the address value for debugging
             print("Port value:", port)  # Print the port value for debugging
+            print("Available Protocols:", protocols)  # Print the available protocols for debugging
 
             try:
-                socket = bluetooth.BluetoothSocket(protocol)
-                socket.connect((address, int(port)))  # Connect to the Bluetooth device using the discovered port
+                socket = None
+                for protocol in protocols:
+                    protocol_value = protocol_mappings.get(protocol)
+                    if protocol_value is not None:
+                        try:
+                            socket = bluetooth.BluetoothSocket(protocol_value)
+                            socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and protocol
 
-                # Perform any necessary operations with the connected Bluetooth device
+                            # Perform any necessary operations with the connected Bluetooth device
 
-                socket.close()  # Close the Bluetooth connection
+                            socket.close()  # Close the Bluetooth connection
 
-                return jsonify({'message': 'Bluetooth device connected successfully'})
-            except bluetooth.btcommon.BluetoothError as e:
-                error_code = e.args[0]
-                error_message = status.get(error_code, str(e))
-                return jsonify({'message': error_message, 'from': 'BluetoothError', 'port': port, 'protocol': protocol, 'address': address}), 500
+                            return jsonify({'message': 'Bluetooth device connected successfully'})
+                        except bluetooth.btcommon.BluetoothError as e:
+                            error_code = e.args[0]
+                            error_message = status.get(error_code, str(e))
+                            return jsonify({'message': error_message, 'from': 'BluetoothError', 'port': port, 'protocol': protocol, 'address': address}), 500
+                        except Exception as e:
+                            return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
+
+                if socket is None:
+                    return jsonify({'message': 'Failed to connect. No compatible protocol found for the Bluetooth device.'}), 500
+
             except ValueError:
-                return jsonify({'message': 'Invalid port value: {}'.format(port), 'from': 'ValueError', 'port': port, 'protocol': protocol, 'address': address}), 500
-            except Exception as e:
-                return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
+                return jsonify({'message': 'Invalid port value: {}'.format(port), 'from': 'ValueError', 'port': port, 'protocols': protocols, 'address': address}), 500
 
         return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
     except Exception as e:
         return jsonify({'message': str(e)}), 500
+
 
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
