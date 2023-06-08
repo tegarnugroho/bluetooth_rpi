@@ -1,7 +1,10 @@
-from flask import Blueprint, jsonify, request
+
 import bluetooth
+import time
 import usb.core
 import usb.util
+
+from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -72,12 +75,8 @@ def connect_bluetooth_device():
 
     try:
         services = bluetooth.find_service(address=address)
-        connected = False  # Flag variable to track the connection status
 
         for service in services:
-            if connected:  # If already connected, break the loop
-                break
-
             port = service["port"]
             protocol = service.get("protocol")
 
@@ -90,9 +89,13 @@ def connect_bluetooth_device():
                 socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
 
                 # Perform any necessary operations with the connected Bluetooth device
+                
+                # Keep the connection active for 5 seconds
+                time.sleep(5)
 
                 socket.close()  # Close the Bluetooth connection
-                connected = True  # Set the flag to indicate a successful connection
+
+                return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
             except bluetooth.btcommon.BluetoothError as e:
                 error_code = e.args[0]
                 error_message = status.get(error_code, str(e))
@@ -100,14 +103,9 @@ def connect_bluetooth_device():
             except Exception as e:
                 return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
 
-        if connected:
-            return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
-        else:
-            return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
-
+        return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-
 
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
