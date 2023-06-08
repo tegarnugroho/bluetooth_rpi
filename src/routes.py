@@ -10,8 +10,7 @@ bluetooth_routes = Blueprint('bluetooth', __name__)
 
 @bluetooth_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
-    nearby_devices = bluetooth.discover_devices(duration=4, lookup_names=True,
-                                                flush_cache=True, lookup_class=True)
+    nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
     devices = []
 
     for device_address, device_name, device_class in nearby_devices:
@@ -73,8 +72,12 @@ def connect_bluetooth_device():
 
     try:
         services = bluetooth.find_service(address=address)
+        connected = False  # Flag variable to track the connection status
 
         for service in services:
+            if connected:  # If already connected, break the loop
+                break
+
             port = service["port"]
             protocol = service.get("protocol")
 
@@ -89,8 +92,7 @@ def connect_bluetooth_device():
                 # Perform any necessary operations with the connected Bluetooth device
 
                 socket.close()  # Close the Bluetooth connection
-
-                return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
+                connected = True  # Set the flag to indicate a successful connection
             except bluetooth.btcommon.BluetoothError as e:
                 error_code = e.args[0]
                 error_message = status.get(error_code, str(e))
@@ -98,10 +100,13 @@ def connect_bluetooth_device():
             except Exception as e:
                 return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
 
-        return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+        if connected:
+            return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
+        else:
+            return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-
 
 
 
