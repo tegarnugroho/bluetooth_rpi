@@ -98,7 +98,7 @@ def connect_bluetooth_device():
 
                             socket.close()  # Close the Bluetooth connection
 
-                            return jsonify({'message': 'Bluetooth device connected successfully'})
+                            return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
                         except bluetooth.btcommon.BluetoothError as e:
                             error_code = e.args[0]
                             error_message = status.get(error_code, str(e))
