@@ -5,7 +5,6 @@ import usb.util
 
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
-from bluetooth.ble import DiscoveryService
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
@@ -56,26 +55,6 @@ def get_bluetooth_devices():
         'status_code': 200,
         'message': 'ok!'
     }), 200
-
-@bluetooth_routes.route('/bluetooth/ble-devices', methods=['GET'])
-def discover_ble_devices():
-    service = DiscoveryService()
-
-    devices = service.discover(10)
-
-    response_data = []
-    for address, name in devices.items():
-        device_data = {
-            'name': name,
-            'address': address
-        }
-        response_data.append(device_data)
-
-    return jsonify({
-        'data': response_data,
-        'status_code': 200,
-        'message': 'BLE devices discovered successfully'
-    }), 200    
     
 @bluetooth_routes.route('/bluetooth/connected-devices', methods=['GET'])
 def get_connected_devices():
