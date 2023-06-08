@@ -43,5 +43,5 @@ def get_device_type(device_class):
         return device_types.get(major_class, 'Unknown')
 
 def is_device_connected(address):
-    connected_devices = bluetooth.btcommon.BluetoothSocket().getpeername()
+    connected_devices = bluetooth.BluetoothSocket().getpeername()
     return address in connected_devices
