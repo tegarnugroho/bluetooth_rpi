@@ -56,7 +56,7 @@ def get_bluetooth_devices():
         'message': 'ok!'
     }), 200
     
-@bluetooth_routes('/bluetooth/connected-devices', methods=['GET'])
+@bluetooth_routes.route('/bluetooth/connected-devices', methods=['GET'])
 def get_connected_devices():
     connected_devices = bluetooth.discover_devices(lookup_names=True)
 
