@@ -93,7 +93,9 @@ def connect_bluetooth_device():
 
     try:
         subprocess.run(['hcitool', 'cc', address], check=True, capture_output=True)
-        subprocess.run(['hcitool', 'auth', address, passkey], check=True, capture_output=True)
+        result = subprocess.run(['hcitool', 'auth', address, passkey], check=True, capture_output=True)
+        print('stdout:', result.stdout.decode('utf-8'))
+        print('stderr:', result.stderr.decode('utf-8'))
 
         # Perform any necessary operations with the connected Bluetooth device
 
