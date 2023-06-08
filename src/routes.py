@@ -1,6 +1,5 @@
 
 import bluetooth
-import time
 import usb.core
 import usb.util
 
@@ -87,13 +86,6 @@ def connect_bluetooth_device():
             try:
                 socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
                 socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
-
-                # Perform any necessary operations with the connected Bluetooth device
-                
-                # Keep the connection active for 5 seconds
-                time.sleep(5)
-
-                socket.close()  # Close the Bluetooth connection
 
                 return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
             except bluetooth.btcommon.BluetoothError as e:
