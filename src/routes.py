@@ -99,7 +99,7 @@ def connect_bluetooth_device():
     except bluetooth.BluetoothError as e:
         error_code = e.args[0]
         error_message = status.get(error_code, str(e))
-        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address}), 500
+        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address, 'code': error_code}), 500
     except Exception as e:
         return jsonify({'message': str(e), 'from': 'Exception', 'address': address}), 500
 
