@@ -1,5 +1,5 @@
 
-import bluetooth
+import bluetooth, subprocess
 import usb.core
 import usb.util
 
@@ -76,6 +76,13 @@ def get_connected_devices():
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
     address = str(request.json.get('address'))  # Convert the Bluetooth device address to a string
+    passkey = "1111" # passkey of the device you want to connect
+
+    # kill any "bluetooth-agent" process that is already running
+    subprocess.call("kill -9 `pidof bluetooth-agent`",shell=True)
+
+    # Start a new "bluetooth-agent" process where XXXX is the passkey
+    subprocess.call("bluetooth-agent " + passkey + " &",shell=True)
     status = {
         0: 'ok',
         1: 'communication timeout',
