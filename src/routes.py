@@ -71,12 +71,11 @@ def connect_bluetooth_device():
         services = bluetooth.find_service(address=address)
 
         for service in services:
-            port = int(service["port"])  # Convert the port value to an integer
             protocol = service["protocol"]
 
             try:
                 socket = bluetooth.BluetoothSocket(protocol)
-                socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port
+                socket.connect((address, 17))  # Connect to the Bluetooth device using the discovered port
 
                 # Perform any necessary operations with the connected Bluetooth device
 
