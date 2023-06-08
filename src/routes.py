@@ -33,7 +33,7 @@ def get_bluetooth_devices():
             host = service['host']
             protocol = service["protocol"]
             service_classes = service["service-classes"]
-            service_id = service["service_id"]
+            service_id = service["service-id"]
 
             service_data = {
                 'port': port,
@@ -41,7 +41,7 @@ def get_bluetooth_devices():
                 'host': host,
                 'protocol': protocol,
                 'service-classes': service_classes,
-                'service_id': service_id,
+                'service-id': service_id,
                 # Include any other service-related information if needed
             }
 
