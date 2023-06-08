@@ -32,7 +32,7 @@ def get_bluetooth_devices():
             name = service['name']
             host = service['host']
             protocol = service["protocol"]
-            service_classes = service["service_classes"]
+            service_classes = service["service-classes"]
             service_id = service["service_id"]
 
             service_data = {
