@@ -7,10 +7,11 @@ from utils import is_valid_bluetooth_address, get_device_type, is_device_connect
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
 
+
 @bluetooth_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
-    nearby_devices = bluetooth.discover_devices(duration=4,lookup_names=True,
-                                                      flush_cache=True, lookup_class=True)
+    nearby_devices = bluetooth.discover_devices(duration=4, lookup_names=True,
+                                                flush_cache=True, lookup_class=True)
     devices = []
 
     for device_address, device_name, device_class in nearby_devices:
@@ -19,15 +20,34 @@ def get_bluetooth_devices():
             'name': device_name,
             'class': device_class,
             'type': get_device_type(device_class),
-            'is_connected': is_device_connected(device_address)
+            'is_connected': is_device_connected(device_address),
+            'services': []
         }
+
+        # Search for services for the current device
+        services = bluetooth.find_service(address=device_address)
+
+        for service in services:
+            port = service['port']
+            name = service['name']
+            host = service['host']
+
+            service_data = {
+                'port': port,
+                'name': name,
+                'host': host,
+                # Include any other service-related information if needed
+            }
+
+            device_data['services'].append(service_data)
+
         devices.append(device_data)
 
     return jsonify({
-        'data': devices, 
+        'data': devices,
         'status_code': 200,
         'message': 'ok!'
-        }), 200
+    }), 200
 
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
