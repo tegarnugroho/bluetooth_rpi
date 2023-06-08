@@ -55,6 +55,23 @@ def get_bluetooth_devices():
         'status_code': 200,
         'message': 'ok!'
     }), 200
+    
+@bluetooth_routes('/bluetooth/connected-devices', methods=['GET'])
+def get_connected_devices():
+    connected_devices = bluetooth.discover_devices(lookup_names=True)
+
+    devices = []
+    for device_address, device_name in connected_devices:
+        devices.append({
+            'address': device_address,
+            'name': device_name
+        })
+
+    return jsonify({
+        'data': devices,
+        'status_code': 200,
+        'message': 'ok!'
+    }), 200 
 
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
