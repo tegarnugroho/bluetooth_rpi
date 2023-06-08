@@ -40,7 +40,7 @@ def get_bluetooth_devices():
                 'name': name,
                 'host': host,
                 'protocol': protocol,
-                'service_classes': service_classes,
+                'service-classes': service_classes,
                 'service_id': service_id,
                 # Include any other service-related information if needed
             }
