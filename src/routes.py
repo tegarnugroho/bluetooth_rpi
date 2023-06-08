@@ -73,33 +73,18 @@ def connect_bluetooth_device():
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
     try:
-        services = bluetooth.find_service(address=address)
+        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol                
+        socket.close();
 
-        for service in services:
-            port = service["port"]
-            protocol = service.get("protocol")
-
-            print("Address value:", address)  # Print the address value for debugging
-            print("Port value:", port)  # Print the port value for debugging
-            print("Available Keys in Service:", service.keys())  # Print the available keys in the service dictionary
-            
-            try:
-                socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-                socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
-                
-                socket.close();
-
-                return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
-            except bluetooth.btcommon.BluetoothError as e:
-                error_code = e.args[0]
-                error_message = status.get(error_code, str(e))
-                return jsonify({'message': error_message, 'from': 'BluetoothError', 'port': port, 'protocol': protocol, 'address': address}), 500
-            except Exception as e:
-                return jsonify({'message': str(e), 'from': 'Exception', 'port': port, 'protocol': protocol, 'address': address}), 500
-
-        return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
+        return jsonify({'message': 'Bluetooth device connected successfully','address': address})
+    except bluetooth.btcommon.BluetoothError as e:
+        error_code = e.args[0]
+        error_message = status.get(error_code, str(e))
+        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address}), 500
     except Exception as e:
-        return jsonify({'message': str(e)}), 500
+        return jsonify({'message': str(e), 'from': 'Exception', 'address': address}), 500
+
 
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
