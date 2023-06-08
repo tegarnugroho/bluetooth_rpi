@@ -77,8 +77,6 @@ def connect_bluetooth_device():
             try:
                 socket = bluetooth.BluetoothSocket(protocol)
                 socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port
-
-                print("port" + str(port) + "address" + address + "protocol" + protocol)    
                 # Perform any necessary operations with the connected Bluetooth device
 
                 socket.close()  # Close the Bluetooth connection
@@ -87,9 +85,9 @@ def connect_bluetooth_device():
             except bluetooth.btcommon.BluetoothError as e:
                 error_code = e.args[0]
                 error_message = status.get(error_code, str(e))
-                return jsonify({'message': error_message, 'from': 'BluetoothError'}), 500
+                return jsonify({'message': error_message, 'from': 'BluetoothError', 'details': "port" + str(port) + "address" + address + "protocol" + protocol}), 500
             except Exception as e:
-                return jsonify({'message': str(e), 'from': 'Exception'}), 500
+                return jsonify({'message': str(e), 'from': 'Exception', 'details': "port" + str(port) + "address" + address + "protocol" + protocol}), 500
 
         return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
     except Exception as e:
