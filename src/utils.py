@@ -1,4 +1,5 @@
 import bluetooth
+import subprocess
 
 def is_valid_bluetooth_address(address):
     parts = address.split(':')
@@ -46,8 +47,9 @@ def is_device_connected(address):
     return len(services) > 0
 
 def check_bluetooth_version():
-    # Get the Bluetooth module version using _getHCIVersion() function
-    hci_version = bluetooth._getHCIVersion()
-
-    # Return the Bluetooth module version as a string
-    return ".".join(str(v) for v in hci_version)
+    try:
+        result = subprocess.check_output(["bluetoothctl", "--version"])
+        version = result.decode('utf-8').strip()
+        return version
+    except subprocess.CalledProcessError:
+        return None
