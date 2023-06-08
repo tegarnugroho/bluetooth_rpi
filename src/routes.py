@@ -85,7 +85,9 @@ def connect_bluetooth_device():
             
             try:
                 socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-                socket.connect((address, port))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
+                socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
+                
+                socket.close();
 
                 return jsonify({'message': 'Bluetooth device connected successfully', 'port': port, 'protocol': protocol, 'address': address})
             except bluetooth.btcommon.BluetoothError as e:
