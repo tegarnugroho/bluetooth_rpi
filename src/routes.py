@@ -71,7 +71,7 @@ def connect_bluetooth_device():
         services = bluetooth.find_service(address=address)
 
         for service in services:
-            port = service["port"]
+            port = int(service["port"])  # Convert the port value to an integer
             protocol = service["protocol"]
 
             try:
