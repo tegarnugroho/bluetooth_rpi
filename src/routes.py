@@ -74,16 +74,18 @@ def connect_bluetooth_device():
 
     try:
         socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol                
-        socket.close();
+        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
 
-        return jsonify({'message': 'Bluetooth device connected successfully','address': address})
+        # Perform any necessary operations with the connected Bluetooth device
+
+        return jsonify({'message': 'Bluetooth device connected successfully', 'address': address})
     except bluetooth.btcommon.BluetoothError as e:
         error_code = e.args[0]
         error_message = status.get(error_code, str(e))
         return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address}), 500
     except Exception as e:
         return jsonify({'message': str(e), 'from': 'Exception', 'address': address}), 500
+
 
 
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
