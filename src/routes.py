@@ -74,7 +74,7 @@ def connect_bluetooth_device():
             protocol = service["protocol"]
 
             try:
-                socket = bluetooth.BluetoothSocket(protocol)
+                socket = bluetooth.BluetoothSocket(bluetooth.L2CAP)
                 socket.connect((address, 17))  # Connect to the Bluetooth device using the discovered port
 
                 # Perform any necessary operations with the connected Bluetooth device
