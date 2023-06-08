@@ -2,14 +2,15 @@ from flask import Blueprint, jsonify, request
 import bluetooth
 import usb.core
 import usb.util
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, check_bluetooth_version
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
 
 @bluetooth_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
-    nearby_devices = bluetooth.discover_devices(lookup_names=True, lookup_class=True)
+    nearby_devices = bluetooth.discover_devices(duration=4,lookup_names=True,
+                                                      flush_cache=True, lookup_class=True)
     devices = []
 
     for device_address, device_name, device_class in nearby_devices:
@@ -40,7 +41,15 @@ def connect_bluetooth_device():
     for protocol in protocols:
         try:
             socket = bluetooth.BluetoothSocket(protocol)
+            
+            # Check Bluetooth module version
+            bluetooth_version = check_bluetooth_version(socket);
+            if bluetooth_version is not None:
+                print(f"Bluetooth module version: {bluetooth_version}")
+                
+                
             socket.connect((address, 1))  # Connect to the Bluetooth device
+
 
             # Perform any necessary operations with the connected Bluetooth device
 

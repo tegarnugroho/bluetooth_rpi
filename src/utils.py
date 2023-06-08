@@ -44,3 +44,14 @@ def get_device_type(device_class):
 def is_device_connected(address):
     services = bluetooth.find_service(address=address)
     return len(services) > 0
+
+def check_bluetooth_version(socket):
+    hci_sock = socket._sock
+
+    # Get Bluetooth HCI version
+    hci_ver = hci_sock.getsockopt(bluetooth.SOL_HCI, bluetooth.HCI_DATA_DIR, 1)
+    major = (hci_ver >> 8) & 0xFF
+    minor = hci_ver & 0xFF
+
+    # Return the Bluetooth module version as a string
+    return f"{major}.{minor}"
