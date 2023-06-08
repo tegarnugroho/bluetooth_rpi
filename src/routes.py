@@ -95,7 +95,6 @@ def connect_bluetooth_device():
         return jsonify({'message': str(e)}), 500
 
 
-
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
 def connect_ble_device():
     address = request.json.get('address')  # Get the Bluetooth device address from the request
