@@ -1,5 +1,5 @@
 
-import bluetooth, subprocess
+import bluetooth
 import usb.core
 import usb.util
 
@@ -76,8 +76,6 @@ def get_connected_devices():
 @bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
     address = str(request.json.get('address'))  # Convert the Bluetooth device address to a string
-    passkey = "1111" # passkey of the device you want to connect
-    
     status = {
         0: 'ok',
         1: 'communication timeout',
@@ -92,10 +90,8 @@ def connect_bluetooth_device():
         return jsonify({'message': 'Invalid Bluetooth address'}), 400
 
     try:
-        subprocess.run(['hcitool', 'cc', address], check=True, capture_output=True)
-        result = subprocess.run(['hcitool', 'auth', address, passkey], check=True, capture_output=True)
-        print('stdout:', result.stdout.decode('utf-8'))
-        print('stderr:', result.stderr.decode('utf-8'))
+        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
 
         # Perform any necessary operations with the connected Bluetooth device
 
@@ -103,7 +99,7 @@ def connect_bluetooth_device():
     except bluetooth.BluetoothError as e:
         error_code = e.args[0]
         error_message = status.get(error_code, str(e))
-        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address, 'code': error_code}), 500
+        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address, 'error_code': error_code}), 500
     except Exception as e:
         return jsonify({'message': str(e), 'from': 'Exception', 'address': address}), 500
 
