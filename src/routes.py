@@ -74,9 +74,11 @@ def connect_bluetooth_device():
             port = service["port"]
             protocol = service["protocol"]
 
+            print("Port value:", port)  # Print the port value for debugging
+
             try:
                 socket = bluetooth.BluetoothSocket(protocol)
-                socket.connect((address, int(str(port))))  # Connect to the Bluetooth device using the discovered port
+                socket.connect((address, int(port)))  # Connect to the Bluetooth device using the discovered port
 
                 # Perform any necessary operations with the connected Bluetooth device
 
@@ -95,7 +97,6 @@ def connect_bluetooth_device():
         return jsonify({'message': 'Failed to connect. Ensure the Bluetooth device is discoverable and compatible with the supported protocols.'}), 500
     except Exception as e:
         return jsonify({'message': str(e)}), 500
-
 
 
 @bluetooth_routes.route('/bluetooth/ble/connect', methods=['POST'])
