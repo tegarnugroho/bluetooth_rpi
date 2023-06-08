@@ -51,6 +51,7 @@ def get_bluetooth_devices():
         'message': 'ok!'
     }), 200
 
+@bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_bluetooth_device():
     address = request.json.get('address')  # Get the Bluetooth device address from the request
     status = {
