@@ -146,9 +146,12 @@ def print_receipt():
     try:
         # Connect to the printer
         device = connect_to_printer()
+        
+        # Set the paper size to 80mm (assuming 42 characters per line)
+        device.set(width=42)
 
         # Print receipt content
-        device.set(text_type='B')
+        device.set(align='center' , text_type='B')
         device.text("P&C POS App\n")
         device.set(text_type='NORMAL')
         device.text("-------------------------------\n")
@@ -161,7 +164,7 @@ def print_receipt():
         device.cut()
 
         # Kick the cash drawer
-        kick_cash_drawer(printer)
+        kick_cash_drawer()
 
         # Close the printer connection
         device.close()
