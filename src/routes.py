@@ -157,19 +157,22 @@ def print_receipt():
         device.set(align='center', text_type='NORMAL')
         device.text("\n-----------------------------------------\n")
         
-        for item in receipt_data['items']:
+        for index, item in enumerate(receipt_data['items'], start=1):
+            number = str(index)
             name = item['name']
             quantity = item['quantity']
             price = f"${item['price']}"
             total = f"${item['price'] * item['quantity']}"
 
             # Calculate the space counts
-            name_space_count = 18 - len(name)  # Adjust the space count as needed
+            number_space_count = 5 - len(number)
+            name_space_count = 20 - len(name)  # Adjust the space count as needed
             qty_space_count = 5 - len(str(quantity))
-            price_space_count = 8 - len(price)
-            total_space_count = 8 - len(total)
+            price_space_count = 10 - len(price)
+            total_space_count = 10 - len(total)
 
-            line = f"{name}{' ' * name_space_count}" \
+            line = f"{number}{' ' * number_space_count}" \
+                   f"{name}{' ' * name_space_count}" \
                    f"{quantity}{' ' * qty_space_count}" \
                    f"{price}{' ' * price_space_count}" \
                    f"{total}{' ' * total_space_count}"
