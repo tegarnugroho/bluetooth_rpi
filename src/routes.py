@@ -155,7 +155,7 @@ def print_receipt():
         device.set(align='center', text_type='B')
         device.text("P&C POS App\n")
         device.set(align='center', text_type='NORMAL')
-        device.line_spacing()
+        device.line_spacing(divisor=360)
         device.text("-------------------------------\n")
         
         for item in receipt_data['items']:
@@ -169,7 +169,7 @@ def print_receipt():
             device.text(line + '\n')
         
         device.text("-------------------------------\n")
-        device.line_spacing()
+        device.line_spacing(divisor=360)
         device.barcode("123456", "CODE39")
 
         # Cut the paper
