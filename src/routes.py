@@ -149,7 +149,7 @@ def print_receipt():
 
         # Print receipt content
         device.text("Receipt\n")
-        device.set(align='center', bold=True)
+        device.set(align='center', text_type='B')
         device.text("\n")
         for item in receipt_data['items']:
             printer.text(f"{item['name']}: ${item['price']}\n")
