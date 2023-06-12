@@ -160,8 +160,6 @@ def print_receipt():
         # Define the column titles
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
 
-        # Calculate the maximum length for each column
-        max_lengths = [len(title) for title in column_titles]
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
@@ -169,28 +167,29 @@ def print_receipt():
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
 
-            # Update the maximum length for each column
-            max_lengths[0] = max(max_lengths[0], len(number))
-            max_lengths[1] = max(max_lengths[1], len(name))
-            max_lengths[2] = max(max_lengths[2], len(str(quantity)))
-            max_lengths[3] = max(max_lengths[3], len(price))
-            max_lengths[4] = max(max_lengths[4], len(total))
+            # Calculate the space counts
+            number_space_count = 2 - len(number)
+            name_space_count = 18 - len(name)  # Adjust the space count as needed
+            qty_space_count = 1 - len(str(quantity))
+            price_space_count = max(9 - len(price), 0)
+            total_space_count = max(10 - len(total), 0)
+            
+            if (index == 0):        
+                # Construct the line for column titles with the maximum length for each column
+                title_line = ''
+                for title, max_length in zip(column_titles, 40):
+                    title_line += f"{title}{' ' * (max_length - len(title) + 1)}"
+                device.text("-----------------------------------------\n")
+                device.text(title_line + '\n')
+                device.text("-----------------------------------------\n\n")
 
-            line = f"{number}{' ' * (max_lengths[0] - len(number) + 1)}" \
-                   f"{name}{' ' * (max_lengths[1] - len(name) + 1)}" \
-                   f"{quantity}{' ' * (max_lengths[2] - len(str(quantity)) + 1)}" \
-                   f"{' ' * (max_lengths[3] - len(price) + 1)}{price}" \
-                   f"{' ' * (max_lengths[4] - len(total) + 1)}{total}"
+            line = f"{number}{' ' * number_space_count}" \
+                   f"{name}{' ' * name_space_count}" \
+                   f"{quantity}{' ' * qty_space_count}" \
+                   f"{' ' * price_space_count}{price}" \
+                   f"{' ' * total_space_count}{total}"
 
             device.text(line + '\n')
-        
-        # Construct the line for column titles with the maximum length for each column
-        title_line = ''
-        for title, max_length in zip(column_titles, max_lengths):
-            title_line += f"{title}{' ' * (max_length - len(title) + 1)}"
-        device.text("-----------------------------------------\n")
-        device.text(title_line + '\n')
-        device.text("-----------------------------------------\n\n")
         
         
         device.text("-----------------------------------------\n\n")
