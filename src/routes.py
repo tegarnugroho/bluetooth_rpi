@@ -157,7 +157,7 @@ def print_receipt():
         device.set(align='center', text_type='NORMAL')
         device.text("\n-----------------------------------------\n")
         
-        device.text("No. Name           Qty Price     Total\n")
+        device.text("No.  Name          Qty Price     Total\n")
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
