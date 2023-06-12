@@ -206,6 +206,7 @@ def connect_to_printer():
     
     return device
 
+@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
 def kick_cash_drawer():
     device = connect_to_printer()
     # Send the command to kick the cash drawer (specific to your printer model)
@@ -217,9 +218,3 @@ def kick_cash_drawer():
     except printer_exceptions.Error as e:
         # Log or handle the error appropriately
         return f'Failed to kick the cash drawer: {str(e)}'
-    
-# API route to print a receipt and kick the cash drawer
-@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
-def kick_cash_drawer_route():
-    result = kick_cash_drawer()
-    return result
