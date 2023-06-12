@@ -151,20 +151,26 @@ def print_receipt():
         device._raw(b'\x1B\x1D\x57\x40\x32')
 
         # Print receipt content
-        device.set(align='center' , text_type='B')
+        device.set(align='center', text_type='B')
         device.text("P&C POS App\n")
         device.set(text_type='NORMAL')
         device.text("-------------------------------\n")
+        
         for item in receipt_data['items']:
-            device.text(f"{item['name']}: ${item['price']}\n")
+            name = item['name']
+            price = f"${item['price']}"
+
+            # Calculate the space count
+            space_count = 30 - len(name) - len(price)  # Adjust the space count as needed
+
+            line = f"{name}{' ' * space_count}{price}"
+            device.text(line + '\n')
+        
         device.text("-------------------------------\n")
         device.barcode('1121232342', 'EAN13', height=100, width=2, pos='BELOW', align_ct=True)
 
         # Cut the paper
         device.cut()
-
-        # Kick the cash drawer
-        kick_cash_drawer()
 
         # Close the printer connection
         device.close()
@@ -173,6 +179,7 @@ def print_receipt():
     
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
+
 
 def connect_to_printer():
     # Connect to the printer based on the chosen interface
