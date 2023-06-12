@@ -5,6 +5,7 @@ import usb.util
 
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
+from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
@@ -135,3 +136,63 @@ def get_usb_devices():
         error_message = f"An error occurred while retrieving USB devices: {str(e)}"
         print(error_message)
         return jsonify({'error': error_message})
+
+# API route to print a receipt and kick the cash drawer
+@bluetooth_routes.route('/print-receipt', methods=['POST'])
+def print_receipt():
+    # Retrieve the receipt data from the request
+    receipt_data = request.json.get('receipt_data')
+
+    try:
+        # Connect to the printer
+        device = connect_to_printer()
+
+        # Print receipt content
+        device.text("Receipt\n")
+        device.set(align='center', bold=True)
+        device.text("\n")
+        for item in receipt_data['items']:
+            printer.text(f"{item['name']}: ${item['price']}\n")
+        device.text("\n")
+
+        # Cut the paper
+        device.cut()
+
+        # Kick the cash drawer
+        kick_cash_drawer(printer)
+
+        # Close the printer connection
+        device.close()
+
+        return 'Receipt printed and cash drawer kicked successfully!'
+    
+    except printer_exceptions.Error as e:
+        return f'Printing failed: {str(e)}'
+
+def connect_to_printer():
+    # Connect to the printer based on the chosen interface
+    # Replace the following lines with your desired connection logic
+    
+    # USB interface
+    device = printer.Usb('0x vendor_id', '0x product_id')
+
+    # Serial (RS232) interface
+    # printer = Serial(devfile='/dev/ttyUSB0', baudrate=9600)
+
+    # Network (Ethernet) interface
+    # printer = Network(host='192.168.1.100', port=9100)
+
+    # Bluetooth interface
+    # printer = Bluetooth(mac='00:11:22:33:44:55')
+    
+    return device
+
+def kick_cash_drawer():
+    printer = connect_to_printer()
+    # Send the command to kick the cash drawer (specific to your printer model)
+    # Replace the following line with the appropriate command for your printer
+    try:
+        printer.cashdraw(2)
+    except printer.exceptions.Error as e:
+        # Log or handle the error appropriately
+        print(f'Failed to kick the cash drawer: {str(e)}')
