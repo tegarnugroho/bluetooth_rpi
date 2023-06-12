@@ -166,10 +166,10 @@ def print_receipt():
 
             # Calculate the space counts
             number_space_count = 3 - len(number)
-            name_space_count = 20 - len(name)  # Adjust the space count as needed
+            name_space_count = 14 - len(name)  # Adjust the space count as needed
             qty_space_count = 3 - len(str(quantity))
-            price_space_count = max(7 - len(price), 0)
-            total_space_count = max(7 - len(total), 0)
+            price_space_count = max(10 - len(price), 0)
+            total_space_count = max(10 - len(total), 0)
 
             line = f"{number}{' ' * number_space_count}" \
                    f"{name}{' ' * name_space_count}" \
