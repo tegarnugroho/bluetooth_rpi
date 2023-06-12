@@ -159,6 +159,15 @@ def print_receipt():
         
         # Define the column titles
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
+        
+        
+        # Construct the line for column titles with the maximum length for each column
+        title_line = ''
+        for title, max_length in zip(column_titles, 40):
+            title_line += f"{title}{' ' * (max_length - len(title) + 1)}"
+        device.text("-----------------------------------------\n")
+        device.text(title_line + '\n')
+        device.text("-----------------------------------------\n\n")
 
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
@@ -173,15 +182,6 @@ def print_receipt():
             qty_space_count = 1 - len(str(quantity))
             price_space_count = max(9 - len(price), 0)
             total_space_count = max(10 - len(total), 0)
-            
-            if (index == 1):        
-                # Construct the line for column titles with the maximum length for each column
-                title_line = ''
-                for title, max_length in zip(column_titles, 40):
-                    title_line += f"{title}{' ' * (max_length - len(title) + 1)}"
-                device.text("-----------------------------------------\n")
-                device.text(title_line + '\n')
-                device.text("-----------------------------------------\n\n")
 
             line = f"{number}{' ' * number_space_count}" \
                    f"{name}{' ' * name_space_count}" \
