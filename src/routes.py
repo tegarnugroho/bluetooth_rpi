@@ -161,23 +161,24 @@ def print_receipt():
             number = str(index)
             name = item['name']
             quantity = item['quantity']
-            price = f"${item['price']}"
-            total = f"${item['price'] * item['quantity']}"
+            price = f"${item['price']:.2f}"
+            total = f"${item['price'] * item['quantity']:.2f}"
 
             # Calculate the space counts
             number_space_count = 3 - len(number)
             name_space_count = 20 - len(name)  # Adjust the space count as needed
             qty_space_count = 3 - len(str(quantity))
-            price_space_count = max(7 - len(price), 0)
-            total_space_count = max(7 - len(total), 0)
+            price_space_count = max(12 - len(price), 0)
+            total_space_count = max(12 - len(total), 0)
 
             line = f"{number}{' ' * number_space_count}" \
                    f"{name}{' ' * name_space_count}" \
                    f"{quantity}{' ' * qty_space_count}" \
-                   f"{price}{' ' * price_space_count}" \
-                   f"{total}{' ' * total_space_count}"
+                   f"{' ' * price_space_count}{price}" \
+                   f"{' ' * total_space_count}{total}"
 
             device.text(line + '\n')
+        
         
         device.text("-----------------------------------------\n\n")
         device.barcode("123456", "CODE39")
