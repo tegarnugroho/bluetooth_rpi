@@ -162,7 +162,7 @@ def print_receipt():
             price = f"${item['price']}"
 
             # Calculate the space count
-            space_count = 35 - len(name) - len(price)  # Adjust the space count as needed
+            space_count = 40 - len(name) - len(price)  # Adjust the space count as needed
 
             line = f"{name}{' ' * space_count}{price}"
             device.text(line + '\n')
