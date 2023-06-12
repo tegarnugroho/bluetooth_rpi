@@ -174,7 +174,7 @@ def print_receipt():
             price_space_count = max(9 - len(price), 0)
             total_space_count = max(10 - len(total), 0)
             
-            title_line = f"{column_titles[0]}{' ' * number_space_count}" \
+            title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
                    f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
                    f"{column_titles[2]}{' ' * qty_space_count}" \
                    f"{' ' * price_space_count}{column_titles[3]}" \
