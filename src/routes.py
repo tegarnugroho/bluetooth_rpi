@@ -159,18 +159,19 @@ def print_receipt():
         
         # Define the column titles
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
-        
+
         # Calculate the maximum space counts for each column
-        max_space_counts = [max(len(title) for title in column_titles)]
+        max_space_counts = [len(title) for title in column_titles]
         for item in receipt_data['items']:
-            max_space_counts.append(max(len(str(item[column])) for column in item))
+            values = [str(item[column]) for column in item]
+            max_space_counts = [max(curr_count, len(value)) for curr_count, value in zip(max_space_counts, values)]
 
         # Construct the line for column titles
         title_line = ''
         for title, max_space_count in zip(column_titles, max_space_counts):
             title_line += f"{title}{' ' * (max_space_count - len(title) + 1)}"
         device.text(title_line + '\n')
-        
+
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
@@ -178,20 +179,33 @@ def print_receipt():
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
 
-            # Calculate the space counts
-            number_space_count = 2 - len(number)
-            name_space_count = 18 - len(name)  # Adjust the space count as needed
-            qty_space_count = 1 - len(str(quantity))
-            price_space_count = max(9 - len(price), 0)
-            total_space_count = max(10 - len(total), 0)
-
-            line = f"{number}{' ' * number_space_count}" \
-                   f"{name}{' ' * name_space_count}" \
-                   f"{quantity}{' ' * qty_space_count}" \
-                   f"{' ' * price_space_count}{price}" \
-                   f"{' ' * total_space_count}{total}"
-
+            line = ''
+            for value, max_space_count in zip([number, name, quantity, price, total], max_space_counts):
+                line += f"{value}{' ' * (max_space_count - len(str(value)) + 1)}"
+            
             device.text(line + '\n')
+        
+        # for index, item in enumerate(receipt_data['items'], start=1):
+        #     number = str(index)
+        #     name = item['name']
+        #     quantity = item['quantity']
+        #     price = f"${item['price']:.2f}"
+        #     total = f"${item['price'] * item['quantity']:.2f}"
+
+        #     # Calculate the space counts
+        #     number_space_count = 2 - len(number)
+        #     name_space_count = 18 - len(name)  # Adjust the space count as needed
+        #     qty_space_count = 1 - len(str(quantity))
+        #     price_space_count = max(9 - len(price), 0)
+        #     total_space_count = max(10 - len(total), 0)
+
+        #     line = f"{number}{' ' * number_space_count}" \
+        #            f"{name}{' ' * name_space_count}" \
+        #            f"{quantity}{' ' * qty_space_count}" \
+        #            f"{' ' * price_space_count}{price}" \
+        #            f"{' ' * total_space_count}{total}"
+
+        #     device.text(line + '\n')
         
         
         device.text("-----------------------------------------\n\n")
