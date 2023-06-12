@@ -147,9 +147,9 @@ def print_receipt():
         # Connect to the printer
         device = connect_to_printer()
         
-        # Set the print width to 3 inches (ESC/POS command)
         device.set(align='center')
-        device._raw(b'\x1B\x57\x42\x32')
+        # Set the print width to 80mm (ESC/POS command)
+        device._raw(b'\x1B\x57\x40\x32')
 
         # Print receipt content
         device.set(align='center', text_type='B')
