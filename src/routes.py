@@ -160,36 +160,29 @@ def print_receipt():
         # Define the column titles
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
 
-        # Calculate the maximum length for each column
-        max_lengths = [len(title) for title in column_titles]
+        # Calculate the maximum width for each column
+        column_widths = [max(len(title) for title in column_titles)]
+        for item in receipt_data['items']:
+            column_widths.append(max(len(str(item[column])) for column in column_titles))
 
         # Print the column titles
-        title_line = ''
-        for title, max_length in zip(column_titles, max_lengths):
-            title_line += f"{title}{' ' * (max_length - len(title) + 1)}"
-        device.text(title_line + '\n')
-        device.text("-----------------------------------------\n")
+        for i, title in enumerate(column_titles):
+            device.text(f"{title:>{column_widths[i]}}  ")
+        device.text("\n")
 
         # Print the items
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
-            quantity = item['quantity']
+            quantity = str(item['quantity'])
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
 
-            # Update the maximum length for each column
-            max_lengths[0] = max(max_lengths[0], len(number))
-            max_lengths[1] = max(max_lengths[1], len(name))
-            max_lengths[2] = max(max_lengths[2], len(str(quantity)))
-            max_lengths[3] = max(max_lengths[3], len(price))
-            max_lengths[4] = max(max_lengths[4], len(total))
-
-            line = f"{number}{' ' * (max_lengths[0] - len(number) + 1)}" \
-                   f"{name}{' ' * (max_lengths[1] - len(name) + 1)}" \
-                   f"{quantity}{' ' * (max_lengths[2] - len(str(quantity)) + 1)}" \
-                   f"{' ' * (max_lengths[3] - len(price) + 1)}{price}" \
-                   f"{' ' * (max_lengths[4] - len(total) + 1)}{total}"
+            line = f"{number:>{column_widths[0]}}  " \
+                   f"{name:>{column_widths[1]}}  " \
+                   f"{quantity:>{column_widths[2]}}  " \
+                   f"{price:>{column_widths[3]}}  " \
+                   f"{total:>{column_widths[4]}}"
 
             device.text(line + '\n')
         
