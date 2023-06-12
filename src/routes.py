@@ -138,7 +138,7 @@ def get_usb_devices():
         return jsonify({'error': error_message})
 
 # API route to print a receipt and kick the cash drawer
-@bluetooth_routes.route('/print-receipt', methods=['POST'])
+@bluetooth_routes.route('printer/print-receipt', methods=['POST'])
 def print_receipt():
     # Retrieve the receipt data from the request
     receipt_data = request.json.get('receipt_data')
@@ -187,6 +187,8 @@ def connect_to_printer():
     
     return device
 
+# API route to print a receipt and kick the cash drawer
+@bluetooth_routes.route('printer/kick-cashdrawer', methods=['POST'])
 def kick_cash_drawer():
     printer = connect_to_printer()
     # Send the command to kick the cash drawer (specific to your printer model)
