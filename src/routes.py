@@ -172,12 +172,12 @@ def print_receipt():
 
         # Cut the paper
         device.cut()
-        
-        #Kick the cash drawer
-        kick_cash_drawer_route()
 
         # Close the printer connection
         device.close()
+        
+        #Kick the cash drawer
+        kick_cash_drawer_route()
 
         return 'Receipt printed and cash drawer kicked successfully!'
     
@@ -207,11 +207,12 @@ def connect_to_printer():
     return device
 
 def kick_cash_drawer():
-    printer = connect_to_printer()
+    device = connect_to_printer()
     # Send the command to kick the cash drawer (specific to your printer model)
     # Replace the following line with the appropriate command for your printer
     try:
-        printer.cashdraw(2)
+        device.cashdraw(2)
+        device.close()
         return 'Cash drawer kicked successfully!'
     except printer_exceptions.Error as e:
         # Log or handle the error appropriately
