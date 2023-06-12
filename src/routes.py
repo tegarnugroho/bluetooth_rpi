@@ -177,7 +177,7 @@ def print_receipt():
         device.close()
         
         #Kick the cash drawer
-        kick_cash_drawer_route()
+        kick_cash_drawer()
 
         return 'Receipt printed and cash drawer kicked successfully!'
     
