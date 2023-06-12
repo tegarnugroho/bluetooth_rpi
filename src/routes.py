@@ -160,29 +160,34 @@ def print_receipt():
         # Define the column titles
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
 
-        # Calculate the maximum width for each column
-        column_widths = [max(len(title) for title in column_titles)]
-        for item in receipt_data['items']:
-            column_widths.append(max(len(str(item[column])) for column in column_titles))
-
-        # Print the column titles
-        for i, title in enumerate(column_titles):
-            device.text(f"{title:>{column_widths[i]}}  ")
-        device.text("\n")
-
-        # Print the items
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
-            quantity = str(item['quantity'])
+            quantity = item['quantity']
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
 
-            line = f"{number:>{column_widths[0]}}  " \
-                   f"{name:>{column_widths[1]}}  " \
-                   f"{quantity:>{column_widths[2]}}  " \
-                   f"{price:>{column_widths[3]}}  " \
-                   f"{total:>{column_widths[4]}}"
+            # Calculate the space counts
+            number_space_count = 2 - len(number)
+            name_space_count = 18 - len(name)  # Adjust the space count as needed
+            qty_space_count = 1 - len(str(quantity))
+            price_space_count = max(9 - len(price), 0)
+            total_space_count = max(10 - len(total), 0)
+            
+            title_line = f"{column_titles['No.']}{' ' * number_space_count}" \
+                   f"{column_titles['Name']}{' ' * name_space_count}" \
+                   f"{column_titles['Qty']}{' ' * qty_space_count}" \
+                   f"{' ' * price_space_count}{column_titles['Price']}" \
+                   f"{' ' * total_space_count}{column_titles['Total']}"
+                   
+            if (index == 1):
+                device.text(title_line + '\n')
+
+            line = f"{number}{' ' * number_space_count}" \
+                   f"{name}{' ' * name_space_count}" \
+                   f"{quantity}{' ' * qty_space_count}" \
+                   f"{' ' * price_space_count}{price}" \
+                   f"{' ' * total_space_count}{total}"
 
             device.text(line + '\n')
         
