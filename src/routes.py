@@ -172,9 +172,12 @@ def print_receipt():
 def connect_to_printer():
     # Connect to the printer based on the chosen interface
     # Replace the following lines with your desired connection logic
-    
+    vendor_id = 0x0e20
+    product_id = 0x04b8
+    in_ep = 0x82  # Input endpoint address
+    out_ep = 0x01  # Output endpoint address
     # USB interface
-    device = printer.Usb('0x04b8', '0x0e20')
+    device = printer.Usb(product_id, vendor_id, in_ep=in_ep, out_ep=out_ep)
 
     # Serial (RS232) interface
     # printer = Serial(devfile='/dev/ttyUSB0', baudrate=9600)
@@ -188,7 +191,7 @@ def connect_to_printer():
     return device
 
 # API route to print a receipt and kick the cash drawer
-@bluetooth_routes.route('printer/kick-cashdrawer', methods=['POST'])
+@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
 def kick_cash_drawer():
     printer = connect_to_printer()
     # Send the command to kick the cash drawer (specific to your printer model)
