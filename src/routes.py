@@ -174,7 +174,7 @@ def print_receipt():
             price_space_count = max(9 - len(price), 0)
             total_space_count = max(10 - len(total), 0)
             
-            if (index == 0):        
+            if (index == 1):        
                 # Construct the line for column titles with the maximum length for each column
                 title_line = ''
                 for title, max_length in zip(column_titles, 40):
