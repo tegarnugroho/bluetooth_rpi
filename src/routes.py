@@ -165,9 +165,9 @@ def print_receipt():
 
             # Calculate the space counts
             name_space_count = 20 - len(name)  # Adjust the space count as needed
-            qty_space_count = 5 - len(str(quantity))
-            price_space_count = 8 - len(price)
-            total_space_count = 8 - len(total)
+            qty_space_count = 7 - len(str(quantity))
+            price_space_count = 9 - len(price)
+            total_space_count = 9 - len(total)
 
             line = f"{name}{' ' * name_space_count}" \
                    f"{quantity}{' ' * qty_space_count}" \
