@@ -157,7 +157,20 @@ def print_receipt():
         device.set(align='center', text_type='NORMAL')
         device.text("\n-----------------------------------------\n")
         
-        device.text("No.Name               Qty Price  Total\n")
+        # Define the column titles
+        column_titles = ["No.", "Name", "Qty", "Price", "Total"]
+        
+        # Calculate the maximum space counts for each column
+        max_space_counts = [max(len(title) for title in column_titles)]
+        for item in receipt_data['items']:
+            max_space_counts.append(max(len(str(item[column])) for column in item))
+
+        # Construct the line for column titles
+        title_line = ''
+        for title, max_space_count in zip(column_titles, max_space_counts):
+            title_line += f"{title}{' ' * (max_space_count - len(title) + 1)}"
+        device.text(title_line + '\n')
+        
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
