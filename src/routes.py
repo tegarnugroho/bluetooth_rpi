@@ -148,7 +148,8 @@ def print_receipt():
         device = connect_to_printer()
         
         # Set the paper width to 80mm (ESC/POS command)
-        device._raw(b'\x1B\x1D\x57\x40\x32')
+        device.set(align='center')
+        device._raw(b'\x1D\x57\x40\x32')
 
         # Print receipt content
         device.set(align='center', text_type='B')
@@ -167,7 +168,7 @@ def print_receipt():
             device.text(line + '\n')
         
         device.text("-------------------------------\n")
-        device.barcode('1121232342', 'EAN13', height=100, width=2, pos='BELOW', align_ct=True)
+        device.barcode("123456", "CODE39")
 
         # Cut the paper
         device.cut()
