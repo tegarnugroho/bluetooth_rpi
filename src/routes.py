@@ -174,7 +174,7 @@ def connect_to_printer():
     # Replace the following lines with your desired connection logic
     
     # USB interface
-    device = printer.Usb('0x vendor_id', '0x product_id')
+    device = printer.Usb('0x04b8', '0x0e20')
 
     # Serial (RS232) interface
     # printer = Serial(devfile='/dev/ttyUSB0', baudrate=9600)
