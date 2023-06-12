@@ -154,7 +154,7 @@ def print_receipt():
         # Print receipt content
         device.set(align='center', text_type='B')
         device.text("P&C POS App\n")
-        device.set(text_type='NORMAL')
+        device.set(align='center', text_type='NORMAL')
         device.text("-------------------------------\n")
         
         for item in receipt_data['items']:
