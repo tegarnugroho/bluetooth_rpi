@@ -149,7 +149,7 @@ def print_receipt():
         
         device.set(align='center')
         # Set the print width to 80mm (ESC/POS command)
-        device._raw(b'\x1B\x57\x40\x32')
+        device._raw(b'\x1B\x57\x40\x50')
 
         # Print receipt content
         device.set(align='center', text_type='B')
