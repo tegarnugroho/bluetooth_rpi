@@ -177,7 +177,7 @@ def print_receipt():
             title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
                    f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
                    f"{column_titles[2]}{' ' * qty_space_count}" \
-                   f"{' ' * (price_space_count - 2)}{column_titles[3]}" \
+                   f"{' ' * price_space_count}{column_titles[3]}" \
                    f"{' ' * total_space_count}{column_titles[4]}"
                    
             if (index == 1):
