@@ -148,13 +148,14 @@ def print_receipt():
         device = connect_to_printer()
 
         # Print receipt content
-        device.set(align='center', text_type='b')
-        device.text("Receipt\n")
-        device.set(align='left', text_type='normal')
-        device.text("\n")
+        device.set(text_type='B')
+        device.text("P&C POS App\n")
+        device.set(text_type='NORMAL')
+        device.text("-------------------------------\n")
         for item in receipt_data['items']:
             device.text(f"{item['name']}: ${item['price']}\n")
-        device.text("\n")
+        device.text("-------------------------------\n")
+        device.barcode('1121232342', 'EAN13', height=100, width=2, pos='BELOW', align_ct=True)
 
         # Cut the paper
         device.cut()
@@ -191,14 +192,19 @@ def connect_to_printer():
     
     return device
 
-# API route to print a receipt and kick the cash drawer
-@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
 def kick_cash_drawer():
     printer = connect_to_printer()
     # Send the command to kick the cash drawer (specific to your printer model)
     # Replace the following line with the appropriate command for your printer
     try:
         printer.cashdraw(2)
-    except printer.exceptions.Error as e:
+        return 'Cash drawer kicked successfully!'
+    except printer_exceptions.Error as e:
         # Log or handle the error appropriately
-        print(f'Failed to kick the cash drawer: {str(e)}')
+        return f'Failed to kick the cash drawer: {str(e)}'
+    
+# API route to print a receipt and kick the cash drawer
+@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
+def kick_cash_drawer_route():
+    result = kick_cash_drawer()
+    return result
