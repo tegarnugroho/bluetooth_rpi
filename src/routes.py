@@ -172,6 +172,9 @@ def print_receipt():
 
         # Cut the paper
         device.cut()
+        
+        #Kick the cash drawer
+        kick_cash_drawer_route()
 
         # Close the printer connection
         device.close()
