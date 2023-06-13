@@ -202,9 +202,10 @@ def print_receipt():
             device.set(align='center')
             total_amount += item['price'] * item['quantity']  # Accumulate the total amount
         
+        total_amount = round(total_amount, 2)
         border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
-        device.text(f"Gesamtbetrag {space(len(str(total_amount)) - 4)}{round(total_amount, 2)}\n")
+        device.text(f"Gesamtbetrag {space(len(str(total_amount)) - 4)}{total_amount}\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
         border_line(device, 48)
