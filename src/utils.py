@@ -65,3 +65,7 @@ def get_image(image_path, max_width):
 def border_line(device, line_width, line_character='-'):
     line = line_character * line_width
     device.text(line + '\n')
+    
+def space(length_space):
+    line = {' ' * length_space}
+    return line

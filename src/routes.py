@@ -4,7 +4,7 @@ import usb.core
 import usb.util
 
 from flask import Blueprint, jsonify, request
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space
 from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -179,29 +179,30 @@ def print_receipt():
             name_space_count = 44 - len(name)  # Adjust the space count as needed
             product_id_space_count = 18 - len(product_id)
             
-            title_line = f"{' ' * 3}{column_titles[0]}{' ' * (product_id_space_count + 4)}" \
-                   f"{column_titles[1]}{' ' * 3}" \
-                   f"{column_titles[2]}{' ' * 3}" \
-                   f"{column_titles[3]}{' ' * 3}"
+            title_line = f"{space(3)}{column_titles[0]}{space(product_id_space_count + 4)}" \
+                   f"{column_titles[1]}{space(3)}" \
+                   f"{column_titles[2]}{space(3)}" \
+                   f"{column_titles[3]}{space(3)}"
 
             if index == 1:
                 device.text(title_line + '\n')
                 border_line(device, 48)
 
-            name_line = f"{name}{' ' * name_space_count}"
-            qty_line = f"{quantity}{' ' * 3}"
-            price_line = f"{price}{' ' * 3}"
+            name_line = f"{name}{space(name_space_count)}"
+            qty_line = f"{quantity}{space(3)}"
+            price_line = f"{price}{space(3)}"
             total_line = f"{total}"
-            line = f"{number}{' ' * number_space_count}" \
+            line = f"{number}{space(number_space_count)}" \
                    f"{name_line}"
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{' ' * 3}{product_id}{' ' * product_id_space_count}{' ' * 3}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
+            device.text(f"{space(3)}{product_id}{space(product_id_space_count + 3)}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
-            
+        
+        border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
-        device.text('Gesamtbetrag' + "\n")
+        device.text(f"Gesamtbetrag {space(4)}200\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
         border_line(device, 48)
