@@ -138,7 +138,6 @@ def get_usb_devices():
         return jsonify({'error': error_message})
 
 # API route to print a receipt and kick the cash drawer
-# API route to print a receipt and kick the cash drawer
 @bluetooth_routes.route('printer/print-receipt', methods=['POST'])
 def print_receipt():
     # Retrieve the receipt data from the request
@@ -205,7 +204,8 @@ def print_receipt():
         total_amount = round(total_amount, 2)
         border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
-        device.text(f"Gesamtbetrag {space(len(str(total_amount)) - 1)}{total_amount}\n")
+        spaces_before_total = max(0, 48 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
+        device.text(f"Gesamtbetrag {space(spaces_before_total)}{total_amount}\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
         border_line(device, 48)
