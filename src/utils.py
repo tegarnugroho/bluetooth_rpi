@@ -67,5 +67,5 @@ def border_line(device, line_width, line_character='-'):
     device.text(line + '\n')
     
 def space(length_space):
-    line = {' ' * length_space}
+    line = ' ' * length_space
     return line
