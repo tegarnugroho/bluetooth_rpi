@@ -207,7 +207,7 @@ def print_receipt():
         
         border_line(device, 48)
         device.text('\n')
-        device.barcode("123456", "CODE39", pos='OFF', width=3, height=80)  # Generate the barcode without a number
+        device.barcode("123456", "CODE39", pos='OFF', height=80)  # Generate the barcode without a number
 
         # Cut the paper
         device.cut()
