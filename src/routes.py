@@ -197,7 +197,7 @@ def print_receipt():
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{' ' * 3}{product_id}{' ' * product_id_space_count}{' ' * 6}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
+            device.text(f"{' ' * 3}{product_id}{' ' * product_id_space_count}{' ' * 5}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
         
         border_line(device, 48)
