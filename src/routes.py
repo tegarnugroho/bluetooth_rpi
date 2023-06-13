@@ -138,6 +138,7 @@ def get_usb_devices():
         return jsonify({'error': error_message})
 
 # API route to print a receipt and kick the cash drawer
+# API route to print a receipt and kick the cash drawer
 @bluetooth_routes.route('printer/print-receipt', methods=['POST'])
 def print_receipt():
     # Retrieve the receipt data from the request
@@ -154,7 +155,7 @@ def print_receipt():
         # Print receipt content
         device.set(align='center', text_type='B')
         device.text("P&C POS App\n")
-        device.set(align='left')
+        device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
@@ -189,9 +190,11 @@ def print_receipt():
             price_line = f"{price}{' ' * 3}"
             total_line = f"{total}"
             line = f"{number}{' ' * number_space_count}" \
-                   f"{name_line}\n{product_id}{' ' * 3}{qty_line}{price_line}{total_line}"
+                   f"{name_line}"
 
             device.text(line + '\n')
+            device.set(align='left')
+            device.text(f"{' ' * number_space_count}{' ' * name_space_count}{product_id}{' ' * 3}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
@@ -210,7 +213,6 @@ def print_receipt():
 
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
-
 
 
 def connect_to_printer():
