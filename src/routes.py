@@ -175,7 +175,7 @@ def print_receipt():
             product_id_space_count = 12 - len(product_id)
             
             title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
-                   f"{column_titles[1]}{' ' * (product_id_space_count)}" \
+                   f"{column_titles[1]}{' ' * (product_id_space_count) + 5}" \
                    f"{column_titles[2]}{' ' * 3}" \
                    f"{column_titles[3]}{' ' * 3}" \
                    f"{column_titles[4]}{' ' * 3}"
