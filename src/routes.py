@@ -4,7 +4,7 @@ import usb.core
 import usb.util
 
 from flask import Blueprint, jsonify, request
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, print_non_breaking_line
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line
 from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -161,7 +161,7 @@ def print_receipt():
         device.set(align='left')
         device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
-        print_non_breaking_line(device, 46)
+        border_line(device, 48)
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
@@ -176,7 +176,7 @@ def print_receipt():
 
             # Calculate the space counts
             number_space_count = len(number)
-            name_space_count = 40 - len(name)  # Adjust the space count as needed
+            name_space_count = 48 - len(name)  # Adjust the space count as needed
             product_id_space_count = 12 - len(product_id)
             
             title_line = f"{column_titles[0]}{' ' * (product_id_space_count + 7)}" \
@@ -186,7 +186,7 @@ def print_receipt():
 
             if index == 1:
                 device.text(title_line + '\n')
-                print_non_breaking_line(device, 46)
+                border_line(device, 48)
 
             name_line = f"{name}{' ' * name_space_count}"
             qty_line = f"{quantity}{' ' * 3}"
@@ -200,7 +200,7 @@ def print_receipt():
             device.text(f"{' ' * number_space_count}{' ' * product_id_space_count}{product_id}{' ' * 8}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
         
-        print_non_breaking_line(device, 46)
+        border_line(device, 48)
         device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode without a number
 
         # Cut the paper

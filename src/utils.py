@@ -62,6 +62,6 @@ def get_image(image_path, max_width):
 
     return image
 
-def print_non_breaking_line(device, line_width, line_character='-'):
+def border_line(device, line_width, line_character='-'):
     line = line_character * line_width
     device.text(line + '\n')
