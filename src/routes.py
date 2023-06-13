@@ -155,11 +155,14 @@ def print_receipt():
         # Print receipt content
         device.set(align='center', text_type='B')
         device.image(get_image('static/images/pnc-logo.bmp', 324))
+        device.text('***** das POS-Unternehmen *****\n')
+        device.text('Beleg-Nr. 10052/013/0001   31.08.2022 11:33:37\n')
+        device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
-        column_titles = ["Name", "Qty", "Price", "Total"]
+        column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
 
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
