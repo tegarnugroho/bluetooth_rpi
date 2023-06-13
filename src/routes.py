@@ -163,6 +163,7 @@ def print_receipt():
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
+            product_id = item['product_id']
             quantity = item['quantity']
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
@@ -170,6 +171,7 @@ def print_receipt():
             # Calculate the space counts
             number_space_count = 2 - len(number)
             name_space_count = 18 - len(name)  # Adjust the space count as needed
+            product_id_space_count = 18 - len(product_id)
             qty_space_count = 1 - len(str(quantity))
             price_space_count = max(9 - len(price), 0)
             total_space_count = max(10 - len(total), 0)
@@ -179,18 +181,21 @@ def print_receipt():
                    f"{column_titles[2]}{' ' * qty_space_count}" \
                    f"{' ' * price_space_count}{column_titles[3]}" \
                    f"{' ' * total_space_count}{column_titles[4]}"
-                   
-            if (index == 1):
-                device.text(title_line + '\n')
 
+            if index == 1:
+                device.text(title_line + '\n')
+                device.text("-----------------------------------------\n")
+
+            name_line = f"{name}{' ' * name_space_count}"
+            product_id_line = f"{product_id}{' ' * product_id_space_count}"
             line = f"{number}{' ' * number_space_count}" \
-                   f"{name}{' ' * name_space_count}" \
+                   f"{name_line}\n" \
+                   f"{product_id_line}\n" \
                    f"{quantity}{' ' * qty_space_count}" \
                    f"{' ' * price_space_count}{price}" \
                    f"{' ' * total_space_count}{total}"
 
             device.text(line + '\n')
-        
         
         device.text("-----------------------------------------\n\n")
         device.barcode("123456", "CODE39")
@@ -201,10 +206,11 @@ def print_receipt():
         # Close the printer connection
         device.close()
         
-        #Kick the cash drawer
+        # Kick the cash drawer
         kick_cash_drawer()
 
         return 'Receipt printed and cash drawer kicked successfully!'
+
     
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
