@@ -204,7 +204,7 @@ def print_receipt():
         total_amount = round(total_amount, 2)
         border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
-        spaces_before_total = max(0, 48 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
+        spaces_before_total = max(0, 24 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
         device.text(f"Gesamtbetrag {space(spaces_before_total)}{total_amount}\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
