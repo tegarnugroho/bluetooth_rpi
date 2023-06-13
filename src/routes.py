@@ -211,8 +211,13 @@ def print_receipt():
         border_line(device)
         
         device.text('Ethaltene Mehrwersteuer\n')
-        device.text(f"{space(10)}19,0%: 0,00\n")
-        device.text('Netto-Warenwert: 2,76\n')
+        task_rate = 19  # Task rate in percentage
+        net_price = total_amount / (1 + (task_rate / 100))  # Calculate the net price
+        task_amount = total_amount - net_price  # Calculate the task amount
+        task_line = f"{space(10)}{task_rate:.1f}%: {task_amount:.2f}\n"
+        net_price_line = f'Netto-Warenwert: {net_price:.2f}\n'
+        device.text(task_line)
+        device.text(net_price_line)
         border_line(device)
         
         #Footer of the receipt
