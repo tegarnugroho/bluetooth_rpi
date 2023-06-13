@@ -154,7 +154,7 @@ def print_receipt():
 
         # Print receipt content
         device.set(align='center', text_type='B')
-        device.text("P&C POS App\n")
+        device.image('/static/images/pnc-logo.png')
         device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
