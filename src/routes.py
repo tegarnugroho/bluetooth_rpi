@@ -210,7 +210,7 @@ def print_receipt():
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         border_line(device)
         
-        device.text('Ethaltene Mehrwersteuer')
+        device.text('Ethaltene Mehrwersteuer\n')
         border_line(device)
         
         #Footer of the receipt
