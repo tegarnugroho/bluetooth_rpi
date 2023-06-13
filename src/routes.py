@@ -172,30 +172,26 @@ def print_receipt():
             number_space_count = 2 - len(number)
             name_space_count = 18 - len(name)  # Adjust the space count as needed
             product_id_space_count = 18 - len(product_id)
-            qty_space_count = 1 - len(str(quantity))
-            price_space_count = max(9 - len(price), 0)
-            total_space_count = max(10 - len(total), 0)
             
             title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
                    f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
-                   f"{column_titles[2]}{' ' * qty_space_count}" \
-                   f"{' ' * price_space_count}{column_titles[3]}" \
-                   f"{' ' * total_space_count}{column_titles[4]}"
+                   f"{column_titles[2]}{' ' * 3}" \
+                   f"{column_titles[3]}{' ' * 3}" \
+                   f"{column_titles[4]}"
 
             if index == 1:
                 device.text(title_line + '\n')
                 device.text("-----------------------------------------\n")
 
             name_line = f"{name}{' ' * name_space_count}"
-            product_id_line = f"{product_id}{' ' * product_id_space_count}"
+            qty_line = f"{quantity}{' ' * 3}"
+            price_line = f"{price}{' ' * 3}"
+            total_line = f"{total}"
             line = f"{number}{' ' * number_space_count}" \
-                   f"{name_line}\n" \
-                   f"{product_id_line}\n" \
-                   f"{quantity}{' ' * qty_space_count}" \
-                   f"{' ' * price_space_count}{price}" \
-                   f"{' ' * total_space_count}{total}"
+                   f"{name_line}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
+            device.text(f"{product_id}\n")  # Print the product ID below the name
         
         device.text("-----------------------------------------\n\n")
         device.barcode("123456", "CODE39")
@@ -210,6 +206,7 @@ def print_receipt():
         kick_cash_drawer()
 
         return 'Receipt printed and cash drawer kicked successfully!'
+
 
     
     except printer_exceptions.Error as e:
