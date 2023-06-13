@@ -50,7 +50,7 @@ def get_image(image_path):
 
     # Load and convert the image
     image = Image.open(image_path)
-    image = image.convert('1')  # Convert to black and white (monochrome) image
+    image = image.convert()  # Convert to black and white (monochrome) image
 
     # Resize the image to fit the paper width (adjust the width as needed)
     max_width = 512  # Maximum width for an 80mm paper (80mm = 3.15 inches = 3.15 * 72 dpi = 226.8 pixels)
