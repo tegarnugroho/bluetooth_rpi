@@ -61,3 +61,7 @@ def get_image(image_path, max_width):
         image = image.resize((new_width, new_height), Image.ANTIALIAS)
 
     return image
+
+def print_non_breaking_line(device, line_width, line_character='-'):
+    line = line_character * line_width
+    device.text(line + '\n')

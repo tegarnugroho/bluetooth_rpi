@@ -4,7 +4,7 @@ import usb.core
 import usb.util
 
 from flask import Blueprint, jsonify, request
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, print_non_breaking_line
 from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -162,6 +162,7 @@ def print_receipt():
         device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
         device.text("\n----------------------------------------------\n")
+        print_non_breaking_line(device, 40)
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
