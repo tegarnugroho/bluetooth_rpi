@@ -55,6 +55,28 @@ def get_bluetooth_devices():
         'status_code': 200,
         'message': 'ok!'
     }), 200
+    
+@bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
+def connect_to_bluetooth():
+    # Retrieve the Bluetooth device address from the request
+    device_address = request.json.get('device_address')
+    
+    # Check if the provided device address is valid
+    if not is_valid_bluetooth_address(device_address):
+        return jsonify({'error': 'Invalid Bluetooth device address'})
+
+    try:
+        # Connect to the Bluetooth device
+        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+        socket.connect((device_address, 1))  # Use the appropriate port number
+        
+        # Do something with the connected Bluetooth device
+        
+        socket.close()  # Close the Bluetooth connection
+
+        return 'Bluetooth device connected successfully!'
+    except bluetooth.btcommon.BluetoothError as e:
+        return f'Failed to connect to Bluetooth device: {str(e)}'    
 
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
