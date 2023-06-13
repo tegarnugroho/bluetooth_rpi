@@ -159,7 +159,7 @@ def print_receipt():
         
         device.text('Beleg-Nr. 10052/013/0001   31.08.2022 11:33:37\n')
         device.set(align='left')
-        device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
+        device.text('Frau Tamara (Kassiererin) bediente sie an Station 1')
         device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
