@@ -154,7 +154,7 @@ def print_receipt():
         # Print receipt content
         device.set(align='center', text_type='B')
         device.text("P&C POS App\n")
-        device.set(align='center')
+        device.set(align='left')
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
@@ -189,7 +189,7 @@ def print_receipt():
             price_line = f"{price}{' ' * 3}"
             total_line = f"{total}"
             line = f"{number}{' ' * number_space_count}" \
-                   f"{name_line}'\n'{product_id}{' ' * 3}{qty_line}{price_line}{total_line}"
+                   f"{name_line}\n{product_id}{' ' * 3}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
             device.set(align='center')
