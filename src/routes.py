@@ -158,7 +158,7 @@ def print_receipt():
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
-        column_titles = ["No.", "Name", "Qty", "Price", "Total"]
+        column_titles = ["No.", "Name", "Product ID", "Qty", "Price", "Total"]
 
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
@@ -177,7 +177,8 @@ def print_receipt():
                    f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
                    f"{column_titles[2]}{' ' * 3}" \
                    f"{column_titles[3]}{' ' * 3}" \
-                   f"{column_titles[4]}"
+                   f"{column_titles[4]}{' ' * 3}" \
+                   f"{column_titles[5]}"
 
             if index == 1:
                 device.text(title_line + '\n')
@@ -187,16 +188,14 @@ def print_receipt():
             qty_line = f"{quantity}{' ' * 3}"
             price_line = f"{price}{' ' * 3}"
             total_line = f"{total}"
-            line = f"{number}.{' ' * number_space_count}" \
-                   f"{name_line}{qty_line}{price_line}{total_line}"
+            line = f"{number}{' ' * number_space_count}" \
+                   f"{name_line}{product_id}{' ' * 3}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
-            device.set(align='left')
-            device.text(f"{' ' * product_id_space_count}{ product_id}\n")  # Print the product ID below the name
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
-        device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode with a number
+        device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode without a number
 
         # Cut the paper
         device.cut()
@@ -211,7 +210,6 @@ def print_receipt():
 
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
-
 
 
 
