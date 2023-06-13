@@ -45,29 +45,41 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
    - To print a receipt and kick the cash drawer, send a POST request to `http://127.0.0.1:5000/printer/print-receipt` with the appropriate payload containing the receipt data.
       - Request body:
 
-     ```json
-     {
-       "receipt_data": {
-         "items": [
-           {
-             "name": "Item 1",
-             "product_id": "123",
-             "quantity": 2,
-             "price": 9.99
-           },
-           {
-             "name": "Item 2",
-             "product_id": "456",
-             "quantity": 1,
-             "price": 19.99
-           }
-         ]
-       }
-     }
-
-     ```
+        ```json
+        {
+        "receipt_data": {
+            "items": [
+            {
+                "name": "Nike Air Balance",
+                "price": 100.99,
+                "quantity": 3,
+                "product_id": "12332423"
+            },
+            {
+                "name": "New Jordan",
+                "price": 90.99,
+                "quantity": 3,
+                "product_id": "12332424"
+            },
+            {
+                "name": "Adinda Yeezy",
+                "price": 170.49,
+                "quantity": 3,
+                "product_id": "12332425"
+            },
+            {
+                "name": "Dior a emon",
+                "price": 200.49,
+                "quantity": 5,
+                "product_id": "12332426"
+            }
+            ]
+        }
+        }
+        ```
      - Adjust the `"items"` list according to your receipt data. Each item should have a `"name"`, `"product_id"`, `"quantity"`, and `"price"`.
      - Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
    - To kick the cash drawer without printing a receipt, send a GET request to `http://127.0.0.1:5000/printer/kick-cashdrawer`.
 
 That's it! By following these steps, you should now be able to run the `app.py` file on your Raspberry Pi and access the different API endpoints. Make sure to adjust the code if you have specific requirements, such as changing the printer interface or modifying the endpoint paths.
+
