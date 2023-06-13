@@ -189,8 +189,8 @@ def print_receipt():
                 border_line(device, 48)
 
             name_line = f"{name}{space(name_space_count)}"
-            qty_line = f"{quantity}{space(3)}"
-            price_line = f"{price}{space(3)}"
+            qty_line = f"{quantity}{space(4)}"
+            price_line = f"{price}{space(4)}"
             total_line = f"{total}"
             line = f"{number}{space(number_space_count)}" \
                    f"{name_line}"
