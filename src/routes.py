@@ -161,7 +161,7 @@ def print_receipt():
         device.set(align='left')
         device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
-        device.text("\n-----------------------------------------\n")
+        device.text("\n----------------------------------------------\n")
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
