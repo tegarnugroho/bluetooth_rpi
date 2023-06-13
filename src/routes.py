@@ -159,7 +159,7 @@ def print_receipt():
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
-        column_titles = ["No.", "Name", "Qty", "Price", "Total"]
+        column_titles = ["Name", "Qty", "Price", "Total"]
 
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
@@ -174,11 +174,11 @@ def print_receipt():
             name_space_count = 40 - len(name)  # Adjust the space count as needed
             product_id_space_count = 12 - len(product_id)
             
-            title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
-                   f"{column_titles[1]}{' ' * (product_id_space_count + 5)}" \
+            title_line = f"{' ' * (number_space_count - 1)}" \
+                   f"{column_titles[0]}{' ' * (product_id_space_count + 5)}" \
+                   f"{column_titles[1]}{' ' * 3}" \
                    f"{column_titles[2]}{' ' * 3}" \
-                   f"{column_titles[3]}{' ' * 3}" \
-                   f"{column_titles[4]}{' ' * 3}"
+                   f"{column_titles[3]}{' ' * 3}"
 
             if index == 1:
                 device.text(title_line + '\n')
