@@ -192,12 +192,11 @@ def print_receipt():
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{' ' * product_id_space_count}{'X' * len(product_id)}\n")  # Placeholder for the product ID
+            device.text(f"{' ' * product_id_space_count}{product_id}\n")  # Print the product ID below the name
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
-        device.barcode("123456", "CODE39")
-        device.text("\n")  # Add a new line to hide the printed number below the barcode
+        device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode with a number
 
         # Cut the paper
         device.cut()
@@ -210,10 +209,9 @@ def print_receipt():
 
         return 'Receipt printed and cash drawer kicked successfully!'
 
-
-    
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
+
 
 
 
