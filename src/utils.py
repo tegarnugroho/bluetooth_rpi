@@ -2,6 +2,7 @@ import bluetooth
 from PIL import Image
 
 def is_valid_bluetooth_address(address):
+    # Check if a Bluetooth address is valid
     parts = address.split(':')
     if len(parts) != 6:
         return False
@@ -13,6 +14,7 @@ def is_valid_bluetooth_address(address):
     return True
 
 def get_device_type(device_class):
+    # Get the type of a Bluetooth device based on its device class
     major_class = (device_class >> 8) & 0xFF
 
     device_types = {
@@ -43,12 +45,12 @@ def get_device_type(device_class):
         return device_types.get(major_class, 'Unknown')
 
 def is_device_connected(address):
+    # Check if a Bluetooth device is connected
     connected_devices = bluetooth.lookup_name(address)
     return address in connected_devices
 
 def get_image(image_path, max_width):
-
-    # Load and convert the image
+    # Load and resize an image
     image = Image.open(image_path)
     image = image.convert()  # Convert to black and white (monochrome) image
 
@@ -63,9 +65,11 @@ def get_image(image_path, max_width):
     return image
 
 def border_line(device, line_width=48, line_character='-'):
+    # Print a line of a specified width and character
     line = line_character * line_width
     device.text(line + '\n')
     
 def space(length_space):
+    # Create a string of spaces with a specified length
     line = ' ' * length_space
     return line
