@@ -46,14 +46,13 @@ def is_device_connected(address):
     connected_devices = bluetooth.lookup_name(address)
     return address in connected_devices
 
-def get_image(image_path):
+def get_image(image_path, max_width):
 
     # Load and convert the image
     image = Image.open(image_path)
     image = image.convert()  # Convert to black and white (monochrome) image
 
     # Resize the image to fit the paper width (adjust the width as needed)
-    max_width = 512  # Maximum width for an 80mm paper (80mm = 3.15 inches = 3.15 * 72 dpi = 226.8 pixels)
     width, height = image.size
     if width > max_width:
         ratio = max_width / width
