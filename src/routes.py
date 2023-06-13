@@ -191,7 +191,7 @@ def print_receipt():
                    f"{name_line}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
-            device.text(f"{product_id}\n")  # Print the product ID below the name
+            device.text(f"{' ' * product_id_space_count}{product_id}\n")  # Print the product ID below the name
         
         device.text("-----------------------------------------\n\n")
         device.barcode("123456", "CODE39")
