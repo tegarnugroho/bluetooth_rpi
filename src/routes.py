@@ -188,7 +188,7 @@ def print_receipt():
             qty_line = f"{quantity}{' ' * 3}"
             price_line = f"{price}{' ' * 3}"
             total_line = f"{total}"
-            line = f"{number}{' ' * number_space_count}" \
+            line = f"{number}{' ' * number_space_count}'\n'" \
                    f"{name_line}{product_id}{' ' * 3}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
