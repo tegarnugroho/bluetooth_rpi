@@ -161,8 +161,7 @@ def print_receipt():
         device.set(align='left')
         device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
-        device.text("\n----------------------------------------------\n")
-        print_non_breaking_line(device, 40)
+        print_non_breaking_line(device, 46)
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
@@ -187,7 +186,7 @@ def print_receipt():
 
             if index == 1:
                 device.text(title_line + '\n')
-                device.text("-----------------------------------------\n")
+                print_non_breaking_line(device, 46)
 
             name_line = f"{name}{' ' * name_space_count}"
             qty_line = f"{quantity}{' ' * 3}"
@@ -201,7 +200,7 @@ def print_receipt():
             device.text(f"{' ' * number_space_count}{' ' * product_id_space_count}{product_id}{' ' * 8}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
         
-        device.text("-----------------------------------------\n\n")
+        print_non_breaking_line(device, 46)
         device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode without a number
 
         # Cut the paper
