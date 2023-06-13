@@ -172,7 +172,7 @@ def print_receipt():
             # Calculate the space counts
             number_space_count = len(number)
             name_space_count = 40 - len(name)  # Adjust the space count as needed
-            product_id_space_count = len(product_id) - 3
+            product_id_space_count = 18 - len(product_id)
             
             title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
                    f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
@@ -194,7 +194,7 @@ def print_receipt():
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{' ' * number_space_count}{' ' * name_space_count}{product_id}{' ' * 3}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
+            device.text(f"{' ' * number_space_count}{' ' * product_id_space_count}{product_id}{' ' * 3}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
