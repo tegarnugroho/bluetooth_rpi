@@ -160,7 +160,7 @@ def print_receipt():
         device.set(align='left')
         device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
         device.set(align='center')
-        border_line(device, 48)
+        border_line(device)
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
@@ -185,7 +185,7 @@ def print_receipt():
 
             if index == 1:
                 device.text(title_line + '\n')
-                border_line(device, 48)
+                border_line(device)
 
             name_line = f"{name}{space(name_space_count)}"
             qty_line = f"{quantity}{space(4)}"
@@ -203,13 +203,17 @@ def print_receipt():
         total_amount = sum(item['price'] * item['quantity'] for item in receipt_data['items'])
         total_amount = round(total_amount, 2)
         
-        border_line(device, 48)    
+        border_line(device)
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
         spaces_before_total = max(0, 24 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
         device.text(f"Gesamtbetrag {space(spaces_before_total)}{total_amount}\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
+        border_line(device)
         
-        border_line(device, 48)
+        device.text('Ethaltene Mehrwersteuer')
+        border_line(device)
+        
+        #Footer of the receipt
         device.text('\n')
         device.barcode("123456", "CODE39", pos='OFF', width=2, height=100)  # Generate the barcode without a number
         device.text('\n\n\n***** Wir danken für Ihren Einkauf *****\n')
