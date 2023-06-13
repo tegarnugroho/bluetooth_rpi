@@ -178,8 +178,7 @@ def print_receipt():
                    f"{column_titles[1]}{' ' * (product_id_space_count)}" \
                    f"{column_titles[2]}{' ' * 3}" \
                    f"{column_titles[3]}{' ' * 3}" \
-                   f"{column_titles[4]}{' ' * 3}" \
-                   f"{column_titles[5]}"
+                   f"{column_titles[4]}{' ' * 3}"
 
             if index == 1:
                 device.text(title_line + '\n')
