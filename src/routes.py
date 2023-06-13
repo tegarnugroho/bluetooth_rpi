@@ -170,7 +170,7 @@ def print_receipt():
             total = f"${item['price'] * item['quantity']:.2f}"
 
             # Calculate the space counts
-            number_space_count = column_widths[0] - len(number)
+            number_space_count = column_widths[1] - len(number)
             name_space_count = column_widths[1] - len(name)
             qty_space_count = column_widths[2] - len(str(quantity))
             price_space_count = column_widths[3] - len(price)
