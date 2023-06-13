@@ -176,7 +176,7 @@ def print_receipt():
 
             # Calculate the space counts
             number_space_count = len(number)
-            name_space_count = 48 - len(name)  # Adjust the space count as needed
+            name_space_count = 44 - len(name)  # Adjust the space count as needed
             product_id_space_count = 12 - len(product_id)
             
             title_line = f"{column_titles[0]}{' ' * (product_id_space_count + 7)}" \
