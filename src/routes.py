@@ -199,8 +199,13 @@ def print_receipt():
             device.set(align='left')
             device.text(f"{' ' * 3}{product_id}{' ' * product_id_space_count}{' ' * 3}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
+            
+        device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
+        device.text('Gesamtbetrag' + "\n")
+        device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
         border_line(device, 48)
+        device.text('\n')
         device.barcode("123456", "CODE39", pos='OFF')  # Generate the barcode without a number
 
         # Cut the paper
