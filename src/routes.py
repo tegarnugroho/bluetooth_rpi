@@ -199,10 +199,11 @@ def print_receipt():
             device.set(align='left')
             device.text(f"{space(3)}{product_id}{space(product_id_space_count + 3)}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
+            total_amount += item['price'] * item['quantity']
         
         border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
-        device.text(f"Gesamtbetrag {space(8)}200\n")
+        device.text(f"Gesamtbetrag {space(8)}{total_amount}\n")
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         
         border_line(device, 48)
