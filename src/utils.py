@@ -1,6 +1,5 @@
 import bluetooth
 from PIL import Image
-import os
 
 def is_valid_bluetooth_address(address):
     parts = address.split(':')
@@ -47,9 +46,7 @@ def is_device_connected(address):
     connected_devices = bluetooth.lookup_name(address)
     return address in connected_devices
 
-def get_image(image_filename):
-    # Get the image path
-    image_path = os.path.join('static', 'images', image_filename)
+def get_image(image_path):
 
     # Load and convert the image
     image = Image.open(image_path)

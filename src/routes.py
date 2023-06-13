@@ -154,7 +154,7 @@ def print_receipt():
 
         # Print receipt content
         device.set(align='center', text_type='B')
-        device.image(get_image('/pnc-logo.png'))
+        device.image(get_image('static/images/pnc-logo.png'))
         device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
