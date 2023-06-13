@@ -1,22 +1,20 @@
-
 import bluetooth
 import usb.core
 import usb.util
-
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space
 from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
 
-
-
 @bluetooth_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
+    # Discover nearby Bluetooth devices
     nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
     devices = []
 
     for device_address, device_name, device_class in nearby_devices:
+        # Create device data
         device_data = {
             'address': device_address,
             'name': device_name,
@@ -26,10 +24,11 @@ def get_bluetooth_devices():
             'services': []
         }
 
-        # Search for services for the current device
+        # Find services for the current device
         services = bluetooth.find_service(address=device_address)
 
         for service in services:
+            # Get service information
             port = service['port']
             name = service['name']
             host = service['host']
@@ -44,7 +43,7 @@ def get_bluetooth_devices():
                 'protocol': protocol,
                 'service-classes': service_classes,
                 'service-id': service_id,
-                # Include any other service-related information if needed
+                # Add any other service information if needed
             }
 
             device_data['services'].append(service_data)
@@ -56,54 +55,6 @@ def get_bluetooth_devices():
         'status_code': 200,
         'message': 'ok!'
     }), 200
-    
-@bluetooth_routes.route('/bluetooth/connected-devices', methods=['GET'])
-def get_connected_devices():
-    connected_devices = bluetooth.discover_devices(lookup_names=True)
-
-    devices = []
-    for device_address, device_name in connected_devices:
-        devices.append({
-            'address': device_address,
-            'name': device_name
-        })
-
-    return jsonify({
-        'data': devices,
-        'status_code': 200,
-        'message': 'ok!'
-    }), 200 
-
-@bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
-def connect_bluetooth_device():
-    address = str(request.json.get('address'))  # Convert the Bluetooth device address to a string
-    status = {
-        0: 'ok',
-        1: 'communication timeout',
-        3: 'checksum error',
-        4: 'unknown command',
-        5: 'invalid access level',
-        8: 'hardware error',
-        10: 'device not ready',
-    }
-
-    if not is_valid_bluetooth_address(address):
-        return jsonify({'message': 'Invalid Bluetooth address'}), 400
-
-    try:
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((address, 1))  # Connect to the Bluetooth device using the discovered port and RFCOMM protocol
-
-        # Perform any necessary operations with the connected Bluetooth device
-
-        return jsonify({'message': 'Bluetooth device connected successfully', 'address': address})
-    except bluetooth.BluetoothError as e:
-        error_code = e.args[0]
-        error_message = status.get(error_code, str(e))
-        return jsonify({'message': error_message, 'from': 'BluetoothError', 'address': address, 'error_code': error_code}), 500
-    except Exception as e:
-        return jsonify({'message': str(e), 'from': 'Exception', 'address': address}), 500
-
 
 @bluetooth_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
@@ -111,6 +62,7 @@ def get_usb_devices():
 
     try:
         for device in usb.core.find(find_all=True):
+            # Get USB device information
             manufacturer = usb.util.get_string(device, device.iManufacturer) if device.iManufacturer else None
             product = usb.util.get_string(device, device.iProduct) if device.iProduct else None
             serial_number = usb.util.get_string(device, device.iSerialNumber) if device.iSerialNumber else None
@@ -158,13 +110,14 @@ def print_receipt():
         
         device.text('Beleg-Nr. 10052/013/0001   31.08.2022 11:33:37\n')
         device.set(align='left')
-        device.text('Frau Tamara (Kassiererin) bediente sie an Station 1\n')
+        device.text('Frau Tamara (Cashier) served you at Station 1\n')
         device.set(align='center')
         border_line(device)
         
         # Define the column titles
         column_titles = ["Art-Nr", "Anz", "E-Preis", "Betrag"]
 
+        # Set the items sections
         for index, item in enumerate(receipt_data['items'], start=1):
             number = str(index)
             name = item['name']
@@ -199,10 +152,11 @@ def print_receipt():
             device.text(f"{space(3)}{product_id}{space(product_id_space_count + 3)}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
             
-        # # Accumulate the total amount 
+        # Accumulate the total amount 
         total_amount = sum(item['price'] * item['quantity'] for item in receipt_data['items'])
         total_amount = round(total_amount, 2)
         
+        # Set total amount section
         border_line(device)
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
         spaces_before_total = max(0, 24 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
@@ -210,20 +164,20 @@ def print_receipt():
         device.set(text_type='NORMAL', font='A', width=1, height=1) 
         border_line(device)
         
-        device.text('Ethaltene Mehrwersteuer\n')
+        # Set the tax, net section
         task_rate = 19  # Task rate in percentage
         net_price = total_amount / (1 + (task_rate / 100))  # Calculate the net price
         task_amount = total_amount - net_price  # Calculate the task amount
         task_line = f"{space(10)}{task_rate:.1f}%: {task_amount:.2f}\n"
-        net_price_line = f'Netto-Warenwert: {net_price:.2f}\n'
+        net_price_line = f'Net Goods Value: {net_price:.2f}\n'
         device.text(task_line)
         device.text(net_price_line)
         border_line(device)
         
-        #Footer of the receipt
+        # Footer of the receipt
         device.text('\n')
         device.barcode("123456", "CODE39", pos='OFF', width=2, height=100)  # Generate the barcode without a number
-        device.text('\n\n\n***** Wir danken für Ihren Einkauf *****\n')
+        device.text('\n\n\n***** Thank you for your purchase *****\n')
         device.text('www.aks-anker.de/')
 
         # Cut the paper
@@ -242,8 +196,8 @@ def print_receipt():
 
 
 def connect_to_printer():
-    # Connect to the printer based on the chosen interface
-    # Replace the following lines with your desired connection logic
+    # Connect to the printer based on the selected interface
+    # Replace the following lines with the desired connection logic
     vendor_id = 0x0e20
     product_id = 0x04b8
     in_ep = 0x82  # Input endpoint address
@@ -251,10 +205,10 @@ def connect_to_printer():
     # USB interface
     device = printer.Usb(product_id, vendor_id, in_ep=in_ep, out_ep=out_ep)
 
-    # Serial (RS232) interface
+    # Serial interface (RS232)
     # printer = Serial(devfile='/dev/ttyUSB0', baudrate=9600)
 
-    # Network (Ethernet) interface
+    # Network interface (Ethernet)
     # printer = Network(host='192.168.1.100', port=9100)
 
     # Bluetooth interface
@@ -262,10 +216,10 @@ def connect_to_printer():
     
     return device
 
-@bluetooth_routes.route('printer/kick-cashdrawer', methods=['GET'])
+@bluetooth_routes.route('/printer/kick-cashdrawer', methods=['GET'])
 def kick_cash_drawer():
     device = connect_to_printer()
-    # Send the command to kick the cash drawer (specific to your printer model)
+    # Send command to open the cash drawer (specific to your printer model)
     # Replace the following line with the appropriate command for your printer
     try:
         device.cashdraw(2)
