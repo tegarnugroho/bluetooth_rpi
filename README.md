@@ -33,8 +33,39 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
 3. **Access the API endpoints:**
    - To get a list of Bluetooth devices, open a web browser and navigate to `http://127.0.0.1:5000/bluetooth/devices`.
    - To connect to a Bluetooth device, send a POST request to `http://127.0.0.1:5000/bluetooth/connect` with the appropriate payload containing the device address.
+   - Request body:
+     ```json
+     {
+       "address": "00:11:22:33:44:55"
+     }
+     # Replace `"00:11:22:33:44:55"` with the Bluetooth device address you want to connect to.
+     # Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
+     ```
    - To get a list of USB devices, open a web browser and navigate to `http://127.0.0.1:5000/usb/devices`.
    - To print a receipt and kick the cash drawer, send a POST request to `http://127.0.0.1:5000/printer/print-receipt` with the appropriate payload containing the receipt data.
+      - Request body:
+
+     ```json
+     {
+       "receipt_data": {
+         "items": [
+           {
+             "name": "Item 1",
+             "product_id": "123",
+             "quantity": 2,
+             "price": 9.99
+           },
+           {
+             "name": "Item 2",
+             "product_id": "456",
+             "quantity": 1,
+             "price": 19.99
+           }
+         ]
+       }
+     }
+     # Adjust the `"items"` list according to your receipt data. Each item should have a `"name"`, `"product_id"`, `"quantity"`, and `"price"`.
+     # Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
    - To kick the cash drawer without printing a receipt, send a GET request to `http://127.0.0.1:5000/printer/kick-cashdrawer`.
 
 That's it! By following these steps, you should now be able to run the `app.py` file on your Raspberry Pi and access the different API endpoints. Make sure to adjust the code if you have specific requirements, such as changing the printer interface or modifying the endpoint paths.
