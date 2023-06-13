@@ -212,6 +212,8 @@ def print_receipt():
         border_line(device, 48)
         device.text('\n')
         device.barcode("123456", "CODE39", pos='OFF', width=2, height=100)  # Generate the barcode without a number
+        device.text('\n\n\n***** Wir danken für Ihren Einkauf *****\n')
+        device.text('www.aks-anker.de/')
 
         # Cut the paper
         device.cut()
