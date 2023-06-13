@@ -211,7 +211,7 @@ def print_receipt():
         border_line(device)
         
         device.text('Ethaltene Mehrwersteuer\n')
-        device.text('19,0%: 0,00\n')
+        device.text(f"{space(4)}19,0%: 0,00\n")
         device.text('Netto-Warenwert: 2,76\n')
         border_line(device)
         
