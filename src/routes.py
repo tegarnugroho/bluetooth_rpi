@@ -155,7 +155,7 @@ def print_receipt():
         # Print receipt content
         device.set(align='center')
         device.image(get_image('static/images/pnc-logo.bmp', 324))
-        device.text('\n***** das POS-Unternehmen *****\n')
+        device.text('\n***** das POS-Unternehmen *****\n\n')
         
         device.text('Beleg-Nr. 10052/013/0001   31.08.2022 11:33:37\n')
         device.set(align='left')
