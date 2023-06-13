@@ -33,15 +33,14 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
 3. **Access the API endpoints:**
    - To get a list of Bluetooth devices, open a web browser and navigate to `http://127.0.0.1:5000/bluetooth/devices`.
    - To connect to a Bluetooth device, send a POST request to `http://127.0.0.1:5000/bluetooth/connect` with the appropriate payload containing the device address.
-   - Request body:
+        - Request body:
      ```json
      {
        "address": "00:11:22:33:44:55"
      }
-
+     ```
      - Replace `"00:11:22:33:44:55"` with the Bluetooth device address you want to connect to.
      - Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
-     ```
    - To get a list of USB devices, open a web browser and navigate to `http://127.0.0.1:5000/usb/devices`.
    - To print a receipt and kick the cash drawer, send a POST request to `http://127.0.0.1:5000/printer/print-receipt` with the appropriate payload containing the receipt data.
       - Request body:
@@ -65,7 +64,8 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
          ]
        }
      }
-     
+
+     ```
      - Adjust the `"items"` list according to your receipt data. Each item should have a `"name"`, `"product_id"`, `"quantity"`, and `"price"`.
      - Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
    - To kick the cash drawer without printing a receipt, send a GET request to `http://127.0.0.1:5000/printer/kick-cashdrawer`.
