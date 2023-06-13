@@ -1,5 +1,6 @@
 import bluetooth
-import subprocess
+from PIL import Image
+import os
 
 def is_valid_bluetooth_address(address):
     parts = address.split(':')
@@ -45,3 +46,22 @@ def get_device_type(device_class):
 def is_device_connected(address):
     connected_devices = bluetooth.lookup_name(address)
     return address in connected_devices
+
+def get_image(image_filename):
+    # Get the image path
+    image_path = os.path.join('static', 'images', image_filename)
+
+    # Load and convert the image
+    image = Image.open(image_path)
+    image = image.convert('1')  # Convert to black and white (monochrome) image
+
+    # Resize the image to fit the paper width (adjust the width as needed)
+    max_width = 512  # Maximum width for an 80mm paper (80mm = 3.15 inches = 3.15 * 72 dpi = 226.8 pixels)
+    width, height = image.size
+    if width > max_width:
+        ratio = max_width / width
+        new_width = max_width
+        new_height = int(height * ratio)
+        image = image.resize((new_width, new_height), Image.ANTIALIAS)
+
+    return image

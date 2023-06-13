@@ -4,7 +4,7 @@ import usb.core
 import usb.util
 
 from flask import Blueprint, jsonify, request
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image
 from escpos import printer, exceptions as printer_exceptions
 
 bluetooth_routes = Blueprint('bluetooth', __name__)
@@ -154,7 +154,7 @@ def print_receipt():
 
         # Print receipt content
         device.set(align='center', text_type='B')
-        device.image('static/images/pnc-logo.png')
+        device.image(get_image('/pnc-logo.png'))
         device.set(align='center')
         device.text("\n-----------------------------------------\n")
         
