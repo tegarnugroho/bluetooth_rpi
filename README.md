@@ -43,7 +43,7 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
      - Remember to send the POST requests with the appropriate content type (e.g., `application/json`) in the headers.
    - To get a list of USB devices, open a web browser and navigate to `http://127.0.0.1:5000/usb/devices`.
    - To print a receipt and kick the cash drawer, send a POST request to `http://127.0.0.1:5000/printer/print-receipt` with the appropriate payload containing the receipt data.
-      - Request body:
+        - Request body:
 
         ```json
         {
