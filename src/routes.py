@@ -191,7 +191,7 @@ def print_receipt():
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{product_id}\n")  # Print the product ID below the name
+            device.text(f"{' ' * name_space_count}{product_id}\n")  # Print the product ID below the name
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
