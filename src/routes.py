@@ -172,7 +172,6 @@ def print_receipt():
             quantity = item['quantity']
             price = f"${item['price']:.2f}"
             total = f"${item['price'] * item['quantity']:.2f}"
-            total_amount = 0  # Variable to store the total amount
 
             # Calculate the space counts
             number_space_count = len(number)
@@ -199,9 +198,11 @@ def print_receipt():
             device.set(align='left')
             device.text(f"{space(3)}{product_id}{space(product_id_space_count + 3)}{qty_line}{price_line}{total_line}\n")  # Print the product ID, quantity, price, and total below the name
             device.set(align='center')
-            total_amount += item['price'] * item['quantity']  # Accumulate the total amount
-        
+            
+        # # Accumulate the total amount 
+        total_amount = sum(item['price'] * item['quantity'] for item in receipt_data['items'])
         total_amount = round(total_amount, 2)
+        
         border_line(device, 48)    
         device.set(text_type='B', font='A', width=2, height=2)  # Set larger size and bold format
         spaces_before_total = max(0, 24 - len(f"Gesamtbetrag {total_amount}"))  # Calculate the remaining spaces
