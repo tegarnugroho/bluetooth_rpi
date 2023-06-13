@@ -158,7 +158,6 @@ def print_receipt():
         device.text("\n-----------------------------------------\n")
         
         # Define the column titles
-        column_widths = [3, 17, 3, 8, 8]
         column_titles = ["No.", "Name", "Qty", "Price", "Total"]
 
         for index, item in enumerate(receipt_data['items'], start=1):
@@ -170,31 +169,35 @@ def print_receipt():
             total = f"${item['price'] * item['quantity']:.2f}"
 
             # Calculate the space counts
-            number_space_count = column_widths[1] - len(number)
-            name_space_count = column_widths[1] - len(name)
-            qty_space_count = column_widths[2] - len(str(quantity))
-            price_space_count = column_widths[3] - len(price)
-            total_space_count = column_widths[4] - len(total)
+            number_space_count = 3 - len(number)
+            name_space_count = 17 - len(name)  # Adjust the space count as needed
+            product_id_space_count = len(product_id) - 3
             
-            title_line = " ".join(f"{title}{' ' * space_count}" for title, space_count in zip(column_titles, column_widths))
+            title_line = f"{column_titles[0]}{' ' * (number_space_count - 1)}" \
+                   f"{column_titles[1]}{' ' * (name_space_count + 5)}" \
+                   f"{column_titles[2]}{' ' * 3}" \
+                   f"{column_titles[3]}{' ' * 3}" \
+                   f"{column_titles[4]}"
 
             if index == 1:
                 device.text(title_line + '\n')
                 device.text("-----------------------------------------\n")
 
-            line = " ".join(f"{number}{' ' * number_space_count}",
-                            f"{name}{' ' * name_space_count}",
-                            f"{quantity}{' ' * qty_space_count}",
-                            f"{price}{' ' * price_space_count}",
-                            f"{total}{' ' * total_space_count}")
+            name_line = f"{name}{' ' * name_space_count}"
+            qty_line = f"{quantity}{' ' * 3}"
+            price_line = f"{price}{' ' * 3}"
+            total_line = f"{total}"
+            line = f"{number}{' ' * number_space_count}" \
+                   f"{name_line}{qty_line}{price_line}{total_line}"
 
             device.text(line + '\n')
             device.set(align='left')
-            device.text(f"{' ' * (column_widths[1] + 5)}{product_id}\n")  # Print the product ID below the name
+            device.text(f"{' ' * product_id_space_count}{'X' * len(product_id)}\n")  # Placeholder for the product ID
             device.set(align='center')
         
         device.text("-----------------------------------------\n\n")
         device.barcode("123456", "CODE39")
+        device.text("\n")  # Add a new line to hide the printed number below the barcode
 
         # Cut the paper
         device.cut()
@@ -206,6 +209,8 @@ def print_receipt():
         kick_cash_drawer()
 
         return 'Receipt printed and cash drawer kicked successfully!'
+
+
     
     except printer_exceptions.Error as e:
         return f'Printing failed: {str(e)}'
