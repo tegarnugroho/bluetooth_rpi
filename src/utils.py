@@ -1,4 +1,6 @@
 import bluetooth
+import usb.core
+
 from PIL import Image
 
 def is_valid_bluetooth_address(address):
@@ -48,6 +50,25 @@ def is_device_connected(address):
     # Check if a Bluetooth device is connected
     connected_devices = bluetooth.lookup_name(address)
     return address in connected_devices
+
+def detect_usb_device_type(device):
+    device_class = device.bDeviceClass
+    device_subclass = device.bDeviceSubClass
+    device_protocol = device.bDeviceProtocol
+
+    if device_class == usb.core.CLASS_PRINTER:
+        return "Printer"
+    elif device_class == usb.core.CLASS_HID:
+        if device_subclass == usb.core.SUBCLASS_BOOT_INTERFACE:
+            if device_protocol == usb.core.PROTOCOL_KEYBOARD:
+                return "Keyboard"
+            elif device_protocol == usb.core.PROTOCOL_MOUSE:
+                return "Mouse"
+        elif device_subclass == 1 and device_protocol == 2:
+            return "Barcode Scanner"
+
+    # Return "Unknown" if the device type is not identified
+    return "Unknown"
 
 def get_image(image_path, max_width):
     # Load and resize an image

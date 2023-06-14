@@ -2,7 +2,7 @@ import bluetooth
 import usb.core
 import usb.util
 from flask import Blueprint, jsonify, request
-from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space
+from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space, detect_usb_device_type
 from escpos import printer, exceptions as printer_exceptions
 
 app_routes = Blueprint('bluetooth', __name__)
@@ -88,12 +88,18 @@ def get_usb_devices():
             manufacturer = usb.util.get_string(device, device.iManufacturer) if device.iManufacturer else None
             product = usb.util.get_string(device, device.iProduct) if device.iProduct else None
             serial_number = usb.util.get_string(device, device.iSerialNumber) if device.iSerialNumber else None
+            vendor_id = device.idVendor
+            product_id = device.idProduct
+            type = detect_usb_device_type(device)
 
             device_data = {
                 'name': product,
                 'vendor': manufacturer,
                 'serial_number': serial_number,
-                'is_connected': True
+                'vendor_id': vendor_id,
+                'product_id': product_id,
+                'is_connected': True,
+                'type': type,
             }
             usb_devices.append(device_data)
 
