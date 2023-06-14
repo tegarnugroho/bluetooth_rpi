@@ -1,0 +1,146 @@
+{
+    "data": [
+        {
+            "address": "00:01:90:77:93:4B",
+            "class": 263808,
+            "is_connected": false,
+            "name": "TM-m30_001042",
+            "services": [
+                {
+                    "host": "00:01:90:77:93:4B",
+                    "name": "Serial Port DevB",
+                    "port": 1,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "1101"
+                    ],
+                    "service-id": null
+                }
+            ],
+            "type": "Imaging"
+        },
+        {
+            "address": "8C:AA:CE:31:A8:09",
+            "class": 5898764,
+            "is_connected": false,
+            "name": "F3",
+            "services": [
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": null,
+                    "port": 31,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "1801"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": null,
+                    "port": 31,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "1800"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "Headset Gateway",
+                    "port": 2,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "1112",
+                        "1203"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "Handsfree Gateway",
+                    "port": 3,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "111F",
+                        "1203"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "AV Remote Control Target",
+                    "port": 23,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "110C"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "Advanced Audio",
+                    "port": 25,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "110A"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "Android Network Access Point",
+                    "port": 15,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "1116"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "Android Network User",
+                    "port": 15,
+                    "protocol": "L2CAP",
+                    "service-classes": [
+                        "1115"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "SMS/MMS",
+                    "port": 26,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "1132"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "OBEX Phonebook Access Server",
+                    "port": 19,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "112F"
+                    ],
+                    "service-id": null
+                },
+                {
+                    "host": "8C:AA:CE:31:A8:09",
+                    "name": "OBEX Object Push",
+                    "port": 12,
+                    "protocol": "RFCOMM",
+                    "service-classes": [
+                        "1105"
+                    ],
+                    "service-id": null
+                }
+            ],
+            "type": "Phone"
+        }
+    ],
+    "message": "ok!",
+    "status_code": 200
+}
