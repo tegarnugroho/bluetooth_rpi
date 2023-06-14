@@ -7,11 +7,11 @@ To run the application and access the API endpoints on your Raspberry Pi, follow
    - Open a terminal or SSH into your Raspberry Pi.
    - Update the package lists by running the following command:
      ```
-     sudo apt update
+     sudo apt-get update
      ```
    - Install the required packages by running the following command:
      ```
-     sudo apt install python3-pip bluetooth libbluetooth-dev libusb-1.0-0-dev
+     sudo apt-get install python3 python3-setuptools python3-pip bluetooth libbluetooth-dev libusb-1.0-0-dev
      ```
    - Install the Python package dependencies by running the following command:
      ```
