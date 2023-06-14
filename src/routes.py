@@ -5,9 +5,9 @@ from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space
 from escpos import printer, exceptions as printer_exceptions
 
-bluetooth_routes = Blueprint('bluetooth', __name__)
+app_routes = Blueprint('bluetooth', __name__)
 
-@bluetooth_routes.route('/bluetooth/devices', methods=['GET'])
+@app_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
     # Discover nearby Bluetooth devices
     nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
@@ -56,7 +56,7 @@ def get_bluetooth_devices():
         'message': 'ok!'
     }), 200
     
-@bluetooth_routes.route('/bluetooth/connect', methods=['POST'])
+@app_routes.route('/bluetooth/connect', methods=['POST'])
 def connect_to_bluetooth():
     # Retrieve the Bluetooth device address from the request
     device_address = request.json.get('device_address')
@@ -78,7 +78,7 @@ def connect_to_bluetooth():
     except bluetooth.btcommon.BluetoothError as e:
         return f'Failed to connect to Bluetooth device: {str(e)}'    
 
-@bluetooth_routes.route('/usb/devices', methods=['GET'])
+@app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
     usb_devices = []
 
@@ -112,7 +112,7 @@ def get_usb_devices():
         return jsonify({'error': error_message})
 
 # API route to print a receipt and kick the cash drawer
-@bluetooth_routes.route('printer/print-receipt', methods=['POST'])
+@app_routes.route('printer/print-receipt', methods=['POST'])
 def print_receipt():
     # Retrieve the receipt data from the request
     receipt_data = request.json.get('receipt_data')
@@ -238,7 +238,7 @@ def connect_to_printer():
     
     return device
 
-@bluetooth_routes.route('/printer/kick-cashdrawer', methods=['GET'])
+@app_routes.route('/printer/kick-cashdrawer', methods=['GET'])
 def kick_cash_drawer():
     device = connect_to_printer()
     # Send command to open the cash drawer (specific to your printer model)
