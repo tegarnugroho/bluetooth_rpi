@@ -1,6 +1,4 @@
 # bluetooth_rpi
-Sure! Here's the updated version with an opening sentence and mentioning that the project uses `app.py`:
-
 To run the application and access the API endpoints on your Raspberry Pi, follow these steps:
 
 1. **Install required dependencies:**
