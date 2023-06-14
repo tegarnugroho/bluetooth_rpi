@@ -145,8 +145,8 @@ def print_receipt():
             name = item['name']
             product_id = item['product_id']
             quantity = item['quantity']
-            price = f"${item['price']:.2f}"
-            total = f"${item['price'] * item['quantity']:.2f}"
+            price = f"{item['price']:.2f}"
+            total = f"{item['price'] * item['quantity']:.2f}"
 
             # Calculate the space counts
             number_space_count = len(number)
