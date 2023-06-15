@@ -70,6 +70,7 @@ def connect_to_bluetooth():
     try:
 
         # Get the device name
+        device_name = None
         command_name = f"bluetoothctl -- info {device_address} | grep 'DeviceName'"
         process_name = subprocess.Popen(command_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output_name, error_name = process_name.communicate()
