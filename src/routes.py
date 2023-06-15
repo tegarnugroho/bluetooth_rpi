@@ -32,7 +32,8 @@ def get_bluetooth_devices():
                 print(f"Error processing device: {e}")
                 # Handle the error as needed
                 return jsonify({
-                    'error': f"Error processing device: {e}"
+                    'message': f"Error processing device: {e}",
+                    'status_code': 500,
                 }), 500
 
         return jsonify({
@@ -44,7 +45,8 @@ def get_bluetooth_devices():
         print(f"Error discovering Bluetooth devices: {e}")
         # Handle the error as needed
         return jsonify({
-            'error': 'Failed to retrieve Bluetooth devices'
+            'message': 'Failed to retrieve Bluetooth devices',
+            'status_code': 500,
         }), 500
     
 @app_routes.route('/bluetooth/pair', methods=['POST'])
@@ -54,7 +56,10 @@ def pair_bluetooth_device():
 
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
-        return jsonify({'error': 'Invalid Bluetooth device address'})
+        return jsonify({
+            'message': 'Invalid Bluetooth device address',
+            'status_code': 500,
+            }), 500
 
     try:
         # Run the bluetoothctl command to initiate pairing
@@ -66,7 +71,10 @@ def pair_bluetooth_device():
             message = "Successfully paired with the Bluetooth device."
         else:
             error_message = error.decode().strip() if error else "Pairing failed."
-            return jsonify({'error': error_message}), 500
+            return jsonify({
+                'message': error_message,
+                'status_code': 500,
+                }), 500
 
         return jsonify({
                 'status_code': 200,
@@ -75,7 +83,10 @@ def pair_bluetooth_device():
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message}), 500
+        return jsonify({
+            'message': error_message,
+            'status_code': 500,
+            }), 500
 
 
 @app_routes.route('/bluetooth/connect', methods=['POST'])
@@ -85,7 +96,10 @@ def connect_to_bluetooth():
 
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
-        return jsonify({'error': 'Invalid Bluetooth device address'}), 500
+        return jsonify({
+            'message': 'Invalid Bluetooth device address',
+            'status_code': 500,
+            }), 500
 
     try:
         # Run the bluetoothctl command to initiate connection
@@ -97,7 +111,10 @@ def connect_to_bluetooth():
             message = "Successfully connected to the Bluetooth device."
         else:
             error_message = error.decode().strip() if error else "Connection failed."
-            return jsonify({'error': error_message}), 500
+            return jsonify({
+                'message': error_message,
+                'status_code': 500,
+                }), 500
         
         return jsonify({
                 'status_code': 200,
@@ -106,7 +123,10 @@ def connect_to_bluetooth():
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message}), 500
+        return jsonify({
+            'message': error_message,
+            'status_code': 500,
+            }), 500
     
 @app_routes.route('/bluetooth/disconnect-and-remove', methods=['POST'])
 def disconnect_and_remove_bluetooth():
@@ -115,7 +135,10 @@ def disconnect_and_remove_bluetooth():
 
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
-        return jsonify({'error': 'Invalid Bluetooth device address'}), 500
+        return jsonify({
+            'message': 'Invalid Bluetooth device address',
+            'status_code': 500,
+            }), 500
 
     try:
         # Run the bluetoothctl command to disconnect and remove the device
@@ -132,7 +155,10 @@ def disconnect_and_remove_bluetooth():
         else:
             error_message = f"Disconnect error: {error_disconnect.decode().strip() if error_disconnect else 'Unknown'}\n" \
                            f"Remove error: {error_remove.decode().strip() if error_remove else 'Unknown'}"
-            return jsonify({'error': error_message}), 500
+            return jsonify({
+                'message': error_message,
+                'status_code': 500,
+                }), 500
 
         return jsonify({
                 'status_code': 200,
@@ -141,7 +167,10 @@ def disconnect_and_remove_bluetooth():
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message}), 500
+        return jsonify({
+            'message': error_message,
+            'status_code': 500,
+            }), 500
 
 @app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
@@ -176,11 +205,17 @@ def get_usb_devices():
     except usb.core.USBError as e:
         error_message = f"USBError: {str(e)}"
         print(error_message)
-        return jsonify({'error': error_message}), 500
+        return jsonify({
+            'message': error_message,
+            'status_code': 500,
+            }), 500
     except Exception as e:
         error_message = f"An error occurred while retrieving USB devices: {str(e)}"
         print(error_message)
-        return jsonify({'error': error_message}), 500
+        return jsonify({
+            'message': error_message,
+            'status_code': 500,
+            }), 500
 
 # API route to print a receipt and kick the cash drawer
 @app_routes.route('printer/print-receipt', methods=['POST'])
@@ -288,7 +323,10 @@ def print_receipt():
         }), 200
 
     except printer_exceptions.Error as e:
-        return jsonify({'error': f'Printing failed: {str(e)}'}), 500
+        return jsonify({
+            'message': f'Printing failed: {str(e)}',
+            'status_code': 500,
+            }), 500
 
 
 def connect_to_printer():
@@ -326,4 +364,7 @@ def kick_cash_drawer():
         }), 200
     except printer_exceptions.Error as e:
         # Log or handle the error appropriately
-        return jsonify({'error': f'Failed to kick the cash drawer: {str(e)}'}), 500
+        return jsonify({
+            'message': f'Failed to kick the cash drawer: {str(e)}',
+            'status_code': 500,
+            }), 500
