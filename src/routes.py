@@ -76,6 +76,7 @@ def connect_to_bluetooth():
 
         device_name = output_name.decode().strip().split(':', 1)[1].strip() if output_name else None
 
+        print('device name: {device_name}')
         if device_name is not None:
             # Run the bluetoothctl command to initiate pairing
             command_pair = f"bluetoothctl -- pair {device_address}"
