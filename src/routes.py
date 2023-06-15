@@ -76,7 +76,7 @@ def connect_to_bluetooth():
 
         device_name = output_name.decode().strip().split(':', 1)[1].strip() if output_name else None
 
-        print(f"device name: {device_name}")
+        print(f"device name: {output_name}")
         if device_name is not None:
             # Run the bluetoothctl command to initiate pairing
             command_pair = f"bluetoothctl -- pair {device_address}"
@@ -88,7 +88,7 @@ def connect_to_bluetooth():
             else:
                 message = "Pairing failed."
         else:
-            message = f"Device not found. {device_name} {output_name} {process_name} {command_name}"
+            message = f"Device not found."
 
         return message
 
