@@ -58,8 +58,8 @@ def get_bluetooth_devices():
         'message': 'ok!'
     }), 200
     
-@app_routes.route('/bluetooth/connect', methods=['POST'])
-def connect_to_bluetooth():
+@app_routes.route('/bluetooth/pair', methods=['POST'])
+def pair_bluetooth_device():
     # Retrieve the Bluetooth device address from the request
     device_address = request.json.get('device_address')
 
@@ -72,12 +72,71 @@ def connect_to_bluetooth():
         command = f"bluetoothctl -- pair {device_address}"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = process.communicate()
-        
-        print(f"output {output}")
+
         if process.returncode == 0:
             message = "Successfully paired with the Bluetooth device."
         else:
             error_message = error.decode().strip() if error else "Pairing failed."
+            return jsonify({'error': error_message})
+
+        return jsonify({'message': message})
+
+    except Exception as e:
+        error_message = f"An error occurred: {str(e)}"
+        return jsonify({'error': error_message})
+
+
+@app_routes.route('/bluetooth/connect', methods=['POST'])
+def connect_to_bluetooth():
+    # Retrieve the Bluetooth device address from the request
+    device_address = request.json.get('device_address')
+
+    # Check if the provided device address is valid
+    if not is_valid_bluetooth_address(device_address):
+        return jsonify({'error': 'Invalid Bluetooth device address'})
+
+    try:
+        # Run the bluetoothctl command to initiate connection
+        command = f"bluetoothctl -- connect {device_address}"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
+
+        if process.returncode == 0:
+            message = "Successfully connected to the Bluetooth device."
+        else:
+            error_message = error.decode().strip() if error else "Connection failed."
+            return jsonify({'error': error_message})
+
+        return jsonify({'message': message})
+
+    except Exception as e:
+        error_message = f"An error occurred: {str(e)}"
+        return jsonify({'error': error_message})
+    
+@app_routes.route('/bluetooth/disconnect-and-remove', methods=['POST'])
+def disconnect_and_remove_bluetooth():
+    # Retrieve the Bluetooth device address from the request
+    device_address = request.json.get('device_address')
+
+    # Check if the provided device address is valid
+    if not is_valid_bluetooth_address(device_address):
+        return jsonify({'error': 'Invalid Bluetooth device address'})
+
+    try:
+        # Run the bluetoothctl command to disconnect and remove the device
+        command_disconnect = f"bluetoothctl -- disconnect {device_address}"
+        process_disconnect = subprocess.Popen(command_disconnect, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output_disconnect, error_disconnect = process_disconnect.communicate()
+
+        command_remove = f"bluetoothctl -- remove {device_address}"
+        process_remove = subprocess.Popen(command_remove, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output_remove, error_remove = process_remove.communicate()
+
+        if process_disconnect.returncode == 0 and process_remove.returncode == 0:
+            message = "Successfully disconnected and removed the Bluetooth device."
+        else:
+            error_message = f"Disconnect error: {error_disconnect.decode().strip() if error_disconnect else 'Unknown'}\n" \
+                           f"Remove error: {error_remove.decode().strip() if error_remove else 'Unknown'}"
             return jsonify({'error': error_message})
 
         return jsonify({'message': message})
