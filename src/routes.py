@@ -1,6 +1,8 @@
 import bluetooth
 import usb.core
 import usb.util
+import subprocess
+
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space, detect_usb_device_type
 from escpos import printer, exceptions as printer_exceptions
@@ -66,17 +68,32 @@ def connect_to_bluetooth():
         return jsonify({'error': 'Invalid Bluetooth device address'})
 
     try:
-        # Connect to the Bluetooth device
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((device_address, 1))  # Use the appropriate port number
-        
-        # Do something with the connected Bluetooth device
-        
-        socket.close()  # Close the Bluetooth connection
 
-        return 'Bluetooth device connected successfully!'
-    except bluetooth.btcommon.BluetoothError as e:
-        return f'Failed to connect to Bluetooth device: {str(e)}'    
+        # Get the device name
+        command_name = f"bluetoothctl -- info {device_address} | grep 'DeviceName'"
+        process_name = subprocess.Popen(command_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output_name, _ = process_name.communicate()
+
+        device_name = output_name.decode().strip().split(':', 1)[1].strip() if output_name else None
+
+        if device_name is not None:
+            # Run the bluetoothctl command to initiate pairing
+            command_pair = f"bluetoothctl -- pair {device_address}"
+            process_pair = subprocess.Popen(command_pair, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            output_pair, _ = process_pair.communicate()
+
+            if "Paired: yes" in output_pair.decode():
+                message = "Successfully paired with the Android device."
+            else:
+                message = "Pairing failed."
+        else:
+            message = "Device not found."
+
+        return message
+
+    except Exception as e:
+        error_message = f"An error occurred: {str(e)}"
+        return error_message   
 
 @app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
