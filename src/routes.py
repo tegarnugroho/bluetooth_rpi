@@ -72,7 +72,8 @@ def connect_to_bluetooth():
         command = f"bluetoothctl -- pair {device_address}"
         process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         output, error = process.communicate()
-
+        
+        print(f"output {output}")
         if process.returncode == 0:
             message = "Successfully paired with the Bluetooth device."
         else:
