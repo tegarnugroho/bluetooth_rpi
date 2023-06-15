@@ -11,52 +11,41 @@ app_routes = Blueprint('bluetooth', __name__)
 
 @app_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
-    # Discover nearby Bluetooth devices
-    nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
-    devices = []
+    try:
+        # Discover nearby Bluetooth devices
+        nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
+        devices = []
 
-    for device_address, device_name, device_class in nearby_devices:
-        # Create device data
-        device_data = {
-            'address': device_address,
-            'name': device_name,
-            'class': device_class,
-            'type': get_device_type(device_class),
-            'is_connected': is_device_connected(device_address),
-            'services': []
-        }
+        for device_address, device_name, device_class in nearby_devices:
+            try:
+                # Create device data
+                device_data = {
+                    'address': device_address,
+                    'name': device_name,
+                    'class': device_class,
+                    'type': get_device_type(device_class),
+                    'is_connected': is_device_connected(device_address)
+                }
 
-        # Find services for the current device
-        services = bluetooth.find_service(address=device_address)
+                devices.append(device_data)
+            except Exception as e:
+                print(f"Error processing device: {e}")
+                # Handle the error as needed
+                return jsonify({
+                    'error': f"Error processing device: {e}"
+                }), 500
 
-        for service in services:
-            # Get service information
-            port = service['port']
-            name = service['name']
-            host = service['host']
-            protocol = service["protocol"]
-            service_classes = service["service-classes"]
-            service_id = service["service-id"]
-
-            service_data = {
-                'port': port,
-                'name': name,
-                'host': host,
-                'protocol': protocol,
-                'service-classes': service_classes,
-                'service-id': service_id,
-                # Add any other service information if needed
-            }
-
-            device_data['services'].append(service_data)
-
-        devices.append(device_data)
-
-    return jsonify({
-        'data': devices,
-        'status_code': 200,
-        'message': 'ok!'
-    }), 200
+        return jsonify({
+            'data': devices,
+            'status_code': 200,
+            'message': 'ok!'
+        }), 200
+    except Exception as e:
+        print(f"Error discovering Bluetooth devices: {e}")
+        # Handle the error as needed
+        return jsonify({
+            'error': 'Failed to retrieve Bluetooth devices'
+        }), 500
     
 @app_routes.route('/bluetooth/pair', methods=['POST'])
 def pair_bluetooth_device():
@@ -77,13 +66,16 @@ def pair_bluetooth_device():
             message = "Successfully paired with the Bluetooth device."
         else:
             error_message = error.decode().strip() if error else "Pairing failed."
-            return jsonify({'error': error_message})
+            return jsonify({'error': error_message}), 500
 
-        return jsonify({'message': message})
+        return jsonify({
+                'status_code': 200,
+                'message': message
+            }), 200
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message})
+        return jsonify({'error': error_message}), 500
 
 
 @app_routes.route('/bluetooth/connect', methods=['POST'])
@@ -93,7 +85,7 @@ def connect_to_bluetooth():
 
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
-        return jsonify({'error': 'Invalid Bluetooth device address'})
+        return jsonify({'error': 'Invalid Bluetooth device address'}), 500
 
     try:
         # Run the bluetoothctl command to initiate connection
@@ -105,13 +97,16 @@ def connect_to_bluetooth():
             message = "Successfully connected to the Bluetooth device."
         else:
             error_message = error.decode().strip() if error else "Connection failed."
-            return jsonify({'error': error_message})
-
-        return jsonify({'message': message})
+            return jsonify({'error': error_message}), 500
+        
+        return jsonify({
+                'status_code': 200,
+                'message': message
+            }), 200
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message})
+        return jsonify({'error': error_message}), 500
     
 @app_routes.route('/bluetooth/disconnect-and-remove', methods=['POST'])
 def disconnect_and_remove_bluetooth():
@@ -120,7 +115,7 @@ def disconnect_and_remove_bluetooth():
 
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
-        return jsonify({'error': 'Invalid Bluetooth device address'})
+        return jsonify({'error': 'Invalid Bluetooth device address'}), 500
 
     try:
         # Run the bluetoothctl command to disconnect and remove the device
@@ -137,13 +132,16 @@ def disconnect_and_remove_bluetooth():
         else:
             error_message = f"Disconnect error: {error_disconnect.decode().strip() if error_disconnect else 'Unknown'}\n" \
                            f"Remove error: {error_remove.decode().strip() if error_remove else 'Unknown'}"
-            return jsonify({'error': error_message})
+            return jsonify({'error': error_message}), 500
 
-        return jsonify({'message': message})
+        return jsonify({
+                'status_code': 200,
+                'message': message
+            }), 200
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return jsonify({'error': error_message})
+        return jsonify({'error': error_message}), 500
 
 @app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
@@ -178,11 +176,11 @@ def get_usb_devices():
     except usb.core.USBError as e:
         error_message = f"USBError: {str(e)}"
         print(error_message)
-        return jsonify({'error': error_message})
+        return jsonify({'error': error_message}), 500
     except Exception as e:
         error_message = f"An error occurred while retrieving USB devices: {str(e)}"
         print(error_message)
-        return jsonify({'error': error_message})
+        return jsonify({'error': error_message}), 500
 
 # API route to print a receipt and kick the cash drawer
 @app_routes.route('printer/print-receipt', methods=['POST'])
@@ -284,10 +282,13 @@ def print_receipt():
         # Kick the cash drawer
         kick_cash_drawer()
 
-        return 'Receipt printed and cash drawer kicked successfully!'
+        return jsonify({
+            'message': 'Receipt printed and cash drawer kicked successfully!',
+            'status_code': 200
+        }), 200
 
     except printer_exceptions.Error as e:
-        return f'Printing failed: {str(e)}'
+        return jsonify({'error': f'Printing failed: {str(e)}'}), 500
 
 
 def connect_to_printer():
@@ -319,7 +320,10 @@ def kick_cash_drawer():
     try:
         device.cashdraw(2)
         device.close()
-        return 'Cash drawer kicked successfully!'
+        return jsonify({
+            'message': 'Cash drawer kicked successfully!',
+            'status_code': 200
+        }), 200
     except printer_exceptions.Error as e:
         # Log or handle the error appropriately
-        return f'Failed to kick the cash drawer: {str(e)}'
+        return jsonify({'error': f'Failed to kick the cash drawer: {str(e)}'}), 500
