@@ -1,0 +1,42 @@
+{
+    "data": [
+        {
+            "is_connected": true,
+            "name": "xHCI Host Controller",
+            "serial_number": "0000:01:00.0",
+            "vendor": "Linux 6.1.21-v8+ xhci-hcd"
+        },
+        {
+            "is_connected": true,
+            "name": "USB2IIC_CTP_CONTROL",
+            "serial_number": null,
+            "vendor": "wch.cn"
+        },
+        {
+            "is_connected": true,
+            "name": "TM-m30 Bluetooth",
+            "serial_number": "5836574D0010420000",
+            "vendor": "EPSON"
+        },
+        {
+            "is_connected": true,
+            "name": "USB Receiver",
+            "serial_number": null,
+            "vendor": "Logitech"
+        },
+        {
+            "is_connected": true,
+            "name": "USB2.0 Hub",
+            "serial_number": null,
+            "vendor": null
+        },
+        {
+            "is_connected": true,
+            "name": "xHCI Host Controller",
+            "serial_number": "0000:01:00.0",
+            "vendor": "Linux 6.1.21-v8+ xhci-hcd"
+        }
+    ],
+    "message": "ok!",
+    "status_code": 200
+}

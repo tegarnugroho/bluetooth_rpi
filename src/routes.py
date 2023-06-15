@@ -1,6 +1,8 @@
 import bluetooth
 import usb.core
 import usb.util
+import subprocess
+
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space, detect_usb_device_type
 from escpos import printer, exceptions as printer_exceptions
@@ -60,23 +62,29 @@ def get_bluetooth_devices():
 def connect_to_bluetooth():
     # Retrieve the Bluetooth device address from the request
     device_address = request.json.get('device_address')
-    
+
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
         return jsonify({'error': 'Invalid Bluetooth device address'})
 
     try:
-        # Connect to the Bluetooth device
-        socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
-        socket.connect((device_address, 1))  # Use the appropriate port number
+        # Run the bluetoothctl command to initiate pairing
+        command = f"bluetoothctl -- pair {device_address}"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
         
-        # Do something with the connected Bluetooth device
-        
-        socket.close()  # Close the Bluetooth connection
+        print(f"output {output}")
+        if process.returncode == 0:
+            message = "Successfully paired with the Bluetooth device."
+        else:
+            error_message = error.decode().strip() if error else "Pairing failed."
+            return jsonify({'error': error_message})
 
-        return 'Bluetooth device connected successfully!'
-    except bluetooth.btcommon.BluetoothError as e:
-        return f'Failed to connect to Bluetooth device: {str(e)}'    
+        return jsonify({'message': message})
+
+    except Exception as e:
+        error_message = f"An error occurred: {str(e)}"
+        return jsonify({'error': error_message})
 
 @app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
