@@ -88,7 +88,7 @@ def connect_to_bluetooth():
             else:
                 message = "Pairing failed."
         else:
-            message = "Device not found."
+            message = "Device not found. {device_name} {output_name} {process_name} {command_name}"
 
         return message
 
