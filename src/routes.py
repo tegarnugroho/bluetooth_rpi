@@ -11,52 +11,40 @@ app_routes = Blueprint('bluetooth', __name__)
 
 @app_routes.route('/bluetooth/devices', methods=['GET'])
 def get_bluetooth_devices():
-    # Discover nearby Bluetooth devices
-    nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
-    devices = []
+    try:
+        # Discover nearby Bluetooth devices
+        nearby_devices = bluetooth.discover_devices(lookup_names=True, flush_cache=True, lookup_class=True)
+        devices = []
 
-    for device_address, device_name, device_class in nearby_devices:
-        # Create device data
-        device_data = {
-            'address': device_address,
-            'name': device_name,
-            'class': device_class,
-            'type': get_device_type(device_class),
-            'is_connected': is_device_connected(device_address),
-            'services': []
-        }
+        for device_address, device_name, device_class in nearby_devices:
+            try:
+                # Create device data
+                device_data = {
+                    'address': device_address,
+                    'name': device_name,
+                    'class': device_class,
+                    'type': get_device_type(device_class),
+                    'is_connected': is_device_connected(device_address)
+                }
 
-        # Find services for the current device
-        services = bluetooth.find_service(address=device_address)
+                devices.append(device_data)
+            except Exception as e:
+                print(f"Error processing device: {e}")
+                # Handle the error as needed
 
-        for service in services:
-            # Get service information
-            port = service['port']
-            name = service['name']
-            host = service['host']
-            protocol = service["protocol"]
-            service_classes = service["service-classes"]
-            service_id = service["service-id"]
-
-            service_data = {
-                'port': port,
-                'name': name,
-                'host': host,
-                'protocol': protocol,
-                'service-classes': service_classes,
-                'service-id': service_id,
-                # Add any other service information if needed
-            }
-
-            device_data['services'].append(service_data)
-
-        devices.append(device_data)
-
-    return jsonify({
-        'data': devices,
-        'status_code': 200,
-        'message': 'ok!'
-    }), 200
+        return jsonify({
+            'data': devices,
+            'status_code': 200,
+            'message': 'ok!'
+        }), 200
+    except Exception as e:
+        print(f"Error discovering Bluetooth devices: {e}")
+        # Handle the error as needed
+        return jsonify({
+            'error': 'Failed to retrieve Bluetooth devices',
+            'status_code': 500,
+            'message': 'error'
+        }), 500
     
 @app_routes.route('/bluetooth/pair', methods=['POST'])
 def pair_bluetooth_device():
