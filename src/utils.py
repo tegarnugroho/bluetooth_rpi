@@ -56,19 +56,20 @@ def detect_usb_device_type(device):
     device_subclass = device.bDeviceSubClass
     device_protocol = device.bDeviceProtocol
 
-    if device_class == usb.core.CLASS_PRINTER:
+    if device_class == 7:  # 0x07 corresponds to the printer device class
         return "Printer"
-    elif device_class == usb.core.CLASS_HID:
-        if device_subclass == usb.core.SUBCLASS_BOOT_INTERFACE:
-            if device_protocol == usb.core.PROTOCOL_KEYBOARD:
-                return "Keyboard"
-            elif device_protocol == usb.core.PROTOCOL_MOUSE:
-                return "Mouse"
-        elif device_subclass == 1 and device_protocol == 2:
+    elif device_class == 3:  # 0x03 corresponds to the human interface device class
+        if device_subclass == 1 and device_protocol == 1:  # Boot interface subclass and keyboard protocol
+            return "Keyboard"
+        elif device_subclass == 1 and device_protocol == 2:  # Boot interface subclass and mouse protocol
+            return "Mouse"
+    elif device_class == 0:  # 0x00 corresponds to the device class with no specific type
+        if device_subclass == 1 and device_protocol == 2:  # Subclass and protocol for barcode scanners
             return "Barcode Scanner"
 
     # Return "Unknown" if the device type is not identified
     return "Unknown"
+
 
 def get_image(image_path, max_width):
     # Load and resize an image
