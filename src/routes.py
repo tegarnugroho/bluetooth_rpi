@@ -62,46 +62,28 @@ def get_bluetooth_devices():
 def connect_to_bluetooth():
     # Retrieve the Bluetooth device address from the request
     device_address = request.json.get('device_address')
-    
+
     # Check if the provided device address is valid
     if not is_valid_bluetooth_address(device_address):
         return jsonify({'error': 'Invalid Bluetooth device address'})
 
     try:
+        # Run the bluetoothctl command to initiate pairing
+        command = f"bluetoothctl -- pair {device_address}"
+        process = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        output, error = process.communicate()
 
-        # Get the device name
-        device_name = None
-        command_name = f"bluetoothctl -- info {device_address} | grep 'DeviceName'"
-        process_name = subprocess.Popen(command_name, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        output_name, error_name = process_name.communicate()
-
-        if process_name.returncode != 0:
-            print(f"Error occurred: {error_name.decode().strip()}")
-        else:    
-            device_name = output_name.decode().strip().split(':', 1)[1].strip() if output_name else None
-
-        print(f"command_name: {command_name}")
-        print(f"process_name: {process_name}")
-        print(f"output_name: {output_name}")
-        print(f"device_name: {device_name}")
-        if device_name is not None:
-            # Run the bluetoothctl command to initiate pairing
-            command_pair = f"bluetoothctl -- pair {device_address}"
-            process_pair = subprocess.Popen(command_pair, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            output_pair, _ = process_pair.communicate()
-
-            if "Paired: yes" in output_pair.decode():
-                message = "Successfully paired with the Android device."
-            else:
-                message = "Pairing failed."
+        if process.returncode == 0:
+            message = "Successfully paired with the Bluetooth device."
         else:
-            message = f"Device not found."
+            error_message = error.decode().strip() if error else "Pairing failed."
+            return jsonify({'error': error_message})
 
-        return message
+        return jsonify({'message': message})
 
     except Exception as e:
         error_message = f"An error occurred: {str(e)}"
-        return error_message   
+        return jsonify({'error': error_message})
 
 @app_routes.route('/usb/devices', methods=['GET'])
 def get_usb_devices():
