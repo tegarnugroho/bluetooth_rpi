@@ -5,7 +5,7 @@ import subprocess
 
 from flask import Blueprint, jsonify, request
 from utils import is_valid_bluetooth_address, get_device_type, is_device_connected, get_image, border_line, space, detect_usb_device_type
-from escpos import printer, exceptions as printer_exceptions
+from escpos import printer, exceptions as printer_exceptions, constants
 
 app_routes = Blueprint('bluetooth', __name__)
 
@@ -327,6 +327,17 @@ def print_receipt():
             'message': f'Printing failed: {str(e)}',
             'status_code': 500,
             }), 500
+
+
+def connect_to_bluetooth_printer(address):
+        # Buat socket Bluetooth RFCOMM dan hubungkan ke printer
+    port = 1  # Nomor port RFCOMM
+    socket = bluetooth.BluetoothSocket(bluetooth.RFCOMM)
+    socket.connect((address, port))
+
+    # Buat objek printer ESCPOS dan konfigurasikan untuk menggunakan socket Bluetooth
+    p = printer.Usb(0x04b8, 0x0e20, 0, 0x82, 0x01)
+    p.set(connector= constants.BLUETOOTH, device=socket)
 
 
 def connect_to_printer():
